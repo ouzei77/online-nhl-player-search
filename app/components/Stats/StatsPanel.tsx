@@ -1,11 +1,11 @@
 import React from 'react';
 import styles from './StatsPanel.module.css';
 
-// Helper function to format season string (e.g., "20252026" -> "2024-25")
+// Helper function to format season string (e.g., "20252026" -> "25-26")
 const formatSeason = (seasonStr: string) => {
 	if (!seasonStr || seasonStr.length !== 8) return seasonStr;
-	const startYear = seasonStr.substring(0, 4);
-	const endYear = seasonStr.substring(6, 8); // Last 2 digits
+	const startYear = seasonStr.substring(2, 4); // Last 2 digits of start year
+	const endYear = seasonStr.substring(6, 8); // Last 2 digits of end year
 	return `${startYear}-${endYear}`;
 };
 

@@ -5,6 +5,7 @@
 
 	width: var(--card-width, 400px);
 	height: 100%;
+	max-height: 100%;
 	min-height: 711px;
 	position: relative;
 	overflow: hidden;
@@ -19,6 +20,7 @@
 	image-rendering: pixelated;
 	image-rendering: -moz-crisp-edges;
 	image-rendering: crisp-edges;
+	flex-shrink: 0;
 }
 
 .nhlCard::after {
@@ -429,7 +431,6 @@
 	font-size: 1.5rem;
 	color: #cba328;
 	margin-bottom: 4px;
-	animation: rotateHint 2s ease-in-out infinite;
 	text-shadow: 2px 2px 0px #000000;
 	filter: drop-shadow(0 0 8px rgba(203, 163, 40, 0.6));
 	display: block;
@@ -452,14 +453,6 @@
 	white-space: nowrap;
 }
 
-@keyframes rotateHint {
-	0%, 100% {
-		transform: rotate(0deg);
-	}
-	50% {
-		transform: rotate(180deg);
-	}
-}
 
 /* Show flip hint on mobile */
 @media (max-width: 1024px) {
