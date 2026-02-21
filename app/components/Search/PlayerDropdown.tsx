@@ -10,7 +10,7 @@ interface PlayerCandidate {
 
 interface PlayerDropdownProps {
 	candidates: PlayerCandidate[];
-	onSelect: (playerId: number) => void;
+	onSelect: (playerId: number, fullName: string) => void;
 	onClose: () => void;
 }
 
@@ -30,7 +30,7 @@ export default function PlayerDropdown({
 					<li
 						key={candidate.playerId}
 						className={styles.dropdownItem}
-						onClick={() => onSelect(candidate.playerId)}
+						onClick={() => onSelect(candidate.playerId, candidate.fullName)}
 					>
 						<div className={styles.playerName}>{candidate.fullName}</div>
 						{candidate.teamName && (

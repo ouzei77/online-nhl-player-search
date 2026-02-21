@@ -258,9 +258,6 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 	if (firstNameRaw) {
 		cayenneExp = `firstName like '${escapeSqlString(firstNameRaw)}%' and ${cayenneExp}`;
 	}
-	
-	// Only include players with an active team (currentTeamId is not null)
-	cayenneExp = `currentTeamId is not null and ${cayenneExp}`;
 
 	const url = `${NHL_STATS_API_BASE}/players?sort=lastName&limit=25&cayenneExp=${encodeURIComponent(cayenneExp)}`;
 

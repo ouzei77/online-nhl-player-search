@@ -45,10 +45,11 @@ export default function SearchForm({
 	const searchDivRef = useRef<HTMLDivElement>(null);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-	const performSearch = async (searchTerm: string) => {
+	// Fetch candidates for dropdown (called while typing)
+	const fetchCandidates = async (searchTerm: string) => {
 		const trimmed = searchTerm.trim();
 		
-		// Basic validation - at least 2 characters
+		// Basic validation - at least 2 characters for suggestions
 		if (trimmed.length < 2) {
 			setCandidates([]);
 			setShowDropdown(false);
@@ -67,6 +68,62 @@ export default function SearchForm({
 					setShowDropdown(false);
 					return;
 				}
+				// Don't show error for autocomplete failures
+				setCandidates([]);
+				setShowDropdown(false);
+				return;
+			}
+
+			const searchData = await searchResponse.json();
+			const foundCandidates = searchData.candidates || [];
+
+			if (foundCandidates.length === 0) {
+				setCandidates([]);
+				setShowDropdown(false);
+			} else {
+				// Show dropdown with candidates
+				setCandidates(foundCandidates);
+				setShowDropdown(true);
+			}
+		} catch (err) {
+			// Don't show error for autocomplete failures
+			setCandidates([]);
+			setShowDropdown(false);
+		} finally {
+			setIsSearching(false);
+		}
+	};
+
+	// Perform actual search (called from Search button)
+	const performSearch = async (searchTerm: string) => {
+		const trimmed = searchTerm.trim();
+		
+		// Validate input
+		const { error } = nameSchema.validate(trimmed);
+		if (error) {
+			alert(error.details[0].message);
+			return;
+		}
+
+		// Basic validation - at least 2 characters
+		if (trimmed.length < 2) {
+			alert('Please enter at least 2 characters to search.');
+			return;
+		}
+
+		setIsSearching(true);
+		try {
+			const searchResponse = await fetch(
+				`${baseUrl}/nhl/search-player?name=${encodeURIComponent(trimmed)}`
+			);
+
+			if (!searchResponse.ok) {
+				if (searchResponse.status === 404) {
+					alert('No players found matching your search.');
+					setCandidates([]);
+					setShowDropdown(false);
+					return;
+				}
 				throw new Error(
 					`Search failed: ${searchResponse.status} ${searchResponse.statusText}`
 				);
@@ -76,6 +133,7 @@ export default function SearchForm({
 			const foundCandidates = searchData.candidates || [];
 
 			if (foundCandidates.length === 0) {
+				alert('No players found matching your search.');
 				setCandidates([]);
 				setShowDropdown(false);
 			} else if (foundCandidates.length === 1) {
@@ -83,13 +141,14 @@ export default function SearchForm({
 				onPlayerSelect(foundCandidates[0].playerId);
 				setCandidates([]);
 				setShowDropdown(false);
-				setValue('');
+				setValue(foundCandidates[0].fullName);
 			} else {
 				// Show dropdown with multiple candidates
 				setCandidates(foundCandidates);
 				setShowDropdown(true);
 			}
 		} catch (err) {
+			alert('An error occurred while searching. Please try again.');
 			setCandidates([]);
 			setShowDropdown(false);
 		} finally {
@@ -106,33 +165,25 @@ export default function SearchForm({
 			clearTimeout(debounceTimerRef.current);
 		}
 
-		// Debounce search - wait 300ms after user stops typing
+		// Debounce candidate fetching - wait 300ms after user stops typing
 		debounceTimerRef.current = setTimeout(() => {
-			performSearch(newValue);
+			fetchCandidates(newValue);
 		}, 300);
 	};
 
 	const handleSearch = () => {
-		// Clear debounce timer and search immediately
+		// Clear debounce timer and perform search immediately
 		if (debounceTimerRef.current) {
 			clearTimeout(debounceTimerRef.current);
 		}
-		const trimmed = value.trim();
-		const { error } = nameSchema.validate(trimmed);
-
-		if (error) {
-			alert(error.details[0].message);
-			return;
-		}
-
-		performSearch(trimmed);
+		performSearch(value.trim());
 	};
 
-	const handlePlayerSelect = (playerId: number) => {
+	const handlePlayerSelect = (playerId: number, fullName: string) => {
 		onPlayerSelect(playerId);
 		setCandidates([]);
 		setShowDropdown(false);
-		setValue('');
+		setValue(fullName);
 	};
 
 	const handleCloseDropdown = () => {
@@ -194,9 +245,9 @@ export default function SearchForm({
 				type="button"
 				className={styles.searchButton}
 				onClick={handleSearch}
-				disabled={disabled}
+				disabled={disabled || isSearching}
 			>
-				Search
+				{isSearching ? 'Searching...' : 'Search'}
 			</button>
 			{showDropdown && candidates.length > 0 && (
 				<PlayerDropdown
