@@ -1,4 +1,5 @@
 import { createRequestHandler } from "react-router";
+import { handleNhlApi } from "./nhl-api";
 
 declare module "react-router" {
 	export interface AppLoadContext {
@@ -16,6 +17,14 @@ const requestHandler = createRequestHandler(
 
 export default {
 	fetch(request, env, ctx) {
+		const url = new URL(request.url);
+		
+		// Route NHL API requests to the API handler
+		if (url.pathname.startsWith("/nhl/")) {
+			return handleNhlApi(request, env);
+		}
+		
+		// All other requests go to React Router
 		return requestHandler(request, {
 			cloudflare: { env, ctx },
 		});
