@@ -533,7 +533,7 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			})
 			.slice(0, 5);
 		
-		const regularSeasons = await Promise.all(uniqueSeasons.map(async (seasonId) => {
+		const regularSeasons = uniqueSeasons.map((seasonId) => {
 			const seasonData = seasonMap.get(seasonId)!;
 			
 			const regularStats = seasonData.regular
@@ -548,31 +548,11 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 					: normalizeGoalieTotals(seasonData.playoffs))
 				: null;
 			
-			// Extract team information from regular season entry (or playoffs if regular doesn't exist)
-			// Try to get team info from the original entry before normalization
+			// Extract team abbreviation directly from the raw entry
+			// The seasonTotals entries have teamAbbrev field directly
 			const teamSource = seasonData.regular ? seasonData.regular : (seasonData.playoffs ? seasonData.playoffs : null);
-			let teamAbbrev = teamSource?.teamAbbrev || teamSource?.teamAbbreviation || teamSource?.team?.abbreviation || null;
-			
-			// Handle localized team name objects (teamName and teamCommonName are objects with 'default' property)
-			let teamName = null;
-			if (teamSource?.teamName) {
-				teamName = typeof teamSource.teamName === 'string' 
-					? teamSource.teamName 
-					: teamSource.teamName.default || teamSource.teamName.en || null;
-			} else if (teamSource?.teamCommonName) {
-				teamName = typeof teamSource.teamCommonName === 'string'
-					? teamSource.teamCommonName
-					: teamSource.teamCommonName.default || teamSource.teamCommonName.en || null;
-			} else if (teamSource?.team?.name) {
-				teamName = typeof teamSource.team.name === 'string'
-					? teamSource.team.name
-					: teamSource.team.name.default || teamSource.team.name.en || null;
-			}
-			
-			// If we don't have abbreviation but have team name, try to look it up
-			if (!teamAbbrev && teamName) {
-				teamAbbrev = await lookupTeamAbbrevByName(teamName);
-			}
+			// Check for teamAbbrev directly on the entry (this is the correct field from the API)
+			const teamAbbrev = teamSource?.teamAbbrev || null;
 			
 			return {
 				season: seasonId,
