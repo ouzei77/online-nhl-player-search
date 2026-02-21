@@ -216,7 +216,7 @@ td.seasonType {
         max-height: 711px;
         overflow-y: auto;
         overflow-x: hidden;
-        padding: 50px 10px 10px 10px;
+        padding: 30px 10px 10px 10px;
         -webkit-overflow-scrolling: touch;
     }
 
