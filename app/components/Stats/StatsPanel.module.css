@@ -1,13 +1,16 @@
 .statsPanel {
-    background: rgba(26, 26, 26, 0.8);
-    backdrop-filter: blur(20px);
-    border-radius: 16px;
-    padding: 32px;
-    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.05);
+    background: #08126b;
+    border: 6px solid #cba328;
+    box-shadow: 
+        inset 0 0 0 2px #000000,
+        0 0 0 2px #000000;
+    padding: 24px;
     display: flex;
     flex-direction: column;
     color: #ffffff;
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 .statsSection {
@@ -19,56 +22,63 @@
 }
 
 .statsTitle {
-    font-size: 1.25rem;
-    font-weight: 600;
+    font-size: 0.75rem;
+    font-weight: normal;
     margin-bottom: 16px;
     color: #ffffff;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.15);
+    border-bottom: 2px solid #cba328;
     padding-bottom: 10px;
-    letter-spacing: -0.01em;
+    letter-spacing: 0.05em;
+    text-shadow: 1px 1px 0px #000000;
 }
 
 .statsTable {
     width: 100%;
     border-collapse: collapse;
-    font-size: 0.95rem;
+    font-size: 0.7rem;
+    image-rendering: pixelated;
+    image-rendering: -moz-crisp-edges;
+    image-rendering: crisp-edges;
 }
 
 .statsTable thead {
-    background-color: rgba(42, 42, 42, 0.6);
-    border-radius: 8px 8px 0 0;
+    background-color: #000000;
+    border: 2px solid #cba328;
 }
 
 .statsTable th {
-    padding: 14px 10px;
+    padding: 12px 10px;
     text-align: center;
-    font-weight: 600;
+    font-weight: normal;
     color: #ffffff;
-    border-bottom: 2px solid rgba(255, 255, 255, 0.1);
-    letter-spacing: 0.02em;
-    font-size: 0.875rem;
+    border-bottom: 2px solid #cba328;
+    letter-spacing: 0.05em;
+    font-size: 0.65rem;
     text-transform: uppercase;
+    text-shadow: 1px 1px 0px #000000;
 }
 
 .bordered {
-    border-left: 1px solid rgba(255, 255, 255, 0.1);
-    border-right: 1px solid rgba(255, 255, 255, 0.1);
+    border-left: 2px solid #cba328;
+    border-right: 2px solid #cba328;
 }
 
 .statsTable td {
     padding: 12px 10px;
     text-align: center;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    border-bottom: 1px solid #cba328;
     color: #ffffff;
-    font-weight: 400;
+    font-weight: normal;
+    text-shadow: 1px 1px 0px #000000;
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .statsTable tbody tr {
-    transition: background-color 0.2s ease;
+    transition: background-color 0.1s ease;
 }
 
 .statsTable tbody tr:hover {
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: rgba(203, 163, 40, 0.2);
 }
 
 /* Fixed: Removed td:first-child so it doesn't target the Playoffs row incorrectly */
@@ -85,40 +95,43 @@
 }
 
 td.seasonLabel {
-    font-weight: 600;
+    font-weight: normal;
     color: #ffffff;
     vertical-align: top;
     padding-top: 12px;
     padding-right: 15px;
-    text-align: left; /* Added to keep the season years left-aligned */
+    text-align: left;
+    text-shadow: 1px 1px 0px #000000;
 }
 
 .teamLabel {
-    font-weight: 400;
-    color: #cccccc;
-    font-size: 0.85rem;
+    font-weight: normal;
+    color: #cba328;
+    font-size: 0.6rem;
     margin-top: 4px;
+    text-shadow: 1px 1px 0px #000000;
 }
 
 td.seasonType {
-    font-weight: 500;
-    color: #cccccc;
-    font-size: 0.9rem;
+    font-weight: normal;
+    color: #cba328;
+    font-size: 0.6rem;
     text-align: left;
-    padding-left: 20px; /* Added to ensure Game Type lines up perfectly with the header */
+    padding-left: 20px;
+    text-shadow: 1px 1px 0px #000000;
 }
 
 .regularRow {
-    background-color: rgba(26, 26, 26, 0.4);
+    background-color: rgba(0, 0, 0, 0.2);
 }
 
 .playoffsRow {
-    background-color: rgba(34, 34, 34, 0.4);
+    background-color: rgba(0, 0, 0, 0.3);
 }
 
 .playoffsRow:hover,
 .regularRow:hover {
-    background-color: rgba(255, 255, 255, 0.06);
+    background-color: rgba(203, 163, 40, 0.2);
 }
 
 .clickableTitle {
@@ -127,23 +140,24 @@ td.seasonType {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.1s ease;
 }
 
 .clickableTitle:hover {
-    color: rgba(255, 255, 255, 0.9);
-    border-bottom-color: rgba(255, 255, 255, 0.25);
+    color: #cba328;
+    border-bottom-color: #cba328;
 }
 
 .dropdownIcon {
-    font-size: 0.85rem;
+    font-size: 0.7rem;
     margin-left: 12px;
-    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    color: rgba(255, 255, 255, 0.6);
+    transition: transform 0.1s ease;
+    color: #cba328;
     display: inline-flex;
     align-items: center;
+    text-shadow: 1px 1px 0px #000000;
 }
 
 .clickableTitle:hover .dropdownIcon {
-    color: rgba(255, 255, 255, 0.8);
+    color: #ffffff;
 }

@@ -5,6 +5,7 @@ import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
 import SearchForm from '../components/Search/SearchForm';
 import StatsPanel from '../components/Stats/StatsPanel';
 import CollectibleCard from '../components/Card/CollectibleCard';
+import Scoreboard from '../components/Scoreboard/Scoreboard';
 
 export function meta({}: Route.MetaArgs) {
 	return [
@@ -189,6 +190,12 @@ export default function PlayerCard({}: Route.ComponentProps) {
 					<CollectibleCard playerData={displayPlayerData} image={displayImage} />
 				</div>
 			</div>
+
+			<Scoreboard
+				playerName={displayPlayerData.full_name}
+				teamName={displayPlayerData.team?.name}
+				jerseyNumber={displayPlayerData.jersey_number}
+			/>
 		</div>
 	);
 }

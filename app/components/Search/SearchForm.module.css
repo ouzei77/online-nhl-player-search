@@ -13,72 +13,92 @@
 	min-width: 280px;
 	height: min-content;
 	padding: 16px 24px;
-	font-size: 16px;
-	font-weight: 400;
+	font-size: 12px;
+	font-weight: normal;
 	position: relative;
-	border-radius: 12px;
-	border: 2px solid rgba(255, 255, 255, 0.1);
+	border: 4px solid #cba328;
+	box-shadow: 
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000;
 	margin-right: 0;
 	color: #ffffff;
-	background-color: rgba(26, 26, 26, 0.8);
-	backdrop-filter: blur(10px);
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+	background-color: #08126b;
+	transition: all 0.1s ease;
 	outline: none;
+	text-shadow: 1px 1px 0px #000000;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 .playerInput::placeholder {
-	color: rgba(255, 255, 255, 0.4);
+	color: rgba(255, 255, 255, 0.5);
+	text-shadow: 1px 1px 0px #000000;
 }
 
 .playerInput:focus {
-	border-color: rgba(255, 255, 255, 0.3);
-	background-color: rgba(30, 30, 30, 0.9);
-	box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+	border-color: #cba328;
+	background-color: #0a1a7a;
+	box-shadow: 
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000,
+		0 0 8px rgba(203, 163, 40, 0.5);
 }
 
 .playerInput:hover:not(:disabled):not(:focus) {
-	border-color: rgba(255, 255, 255, 0.15);
-	background-color: rgba(28, 28, 28, 0.85);
+	border-color: #d4b84a;
+	background-color: #0a1a7a;
 }
 
 .playerInput:disabled {
-	background-color: rgba(40, 40, 40, 0.5);
+	background-color: rgba(8, 18, 107, 0.5);
 	cursor: not-allowed;
 	opacity: 0.5;
-	border-color: rgba(255, 255, 255, 0.05);
+	border-color: rgba(203, 163, 40, 0.3);
 }
 
 .searchButton {
 	display: block;
 	padding: 16px 32px;
-	font-size: 16px;
-	font-weight: 600;
-	background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-	color: #ffffff;
+	font-size: 12px;
+	font-weight: normal;
+	background: #cba328;
+	color: #000000;
 	position: relative;
-	border-radius: 12px;
-	border: none;
+	border: 4px solid #cba328;
+	box-shadow: 
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000;
 	cursor: pointer;
-	transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-	box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+	transition: all 0.1s ease;
 	white-space: nowrap;
+	text-shadow: none;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 .searchButton:hover:not(:disabled) {
-	background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-	box-shadow: 0 6px 20px rgba(37, 99, 235, 0.4);
+	background: #d4b84a;
+	border-color: #d4b84a;
+	box-shadow: 
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000,
+		0 0 8px rgba(203, 163, 40, 0.5);
 	transform: translateY(-1px);
 }
 
 .searchButton:active:not(:disabled) {
 	transform: translateY(0);
-	box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+	background: #b8941f;
 }
 
 .searchButton:disabled {
-	background: rgba(60, 60, 60, 0.5);
+	background: rgba(203, 163, 40, 0.3);
 	cursor: not-allowed;
 	opacity: 0.5;
-	box-shadow: none;
+	box-shadow: 
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000;
 	transform: none;
 }

@@ -7,14 +7,17 @@
 	height: var(--card-height, 711px);
 	position: relative;
 	overflow: hidden;
-	border-radius: 14px;
-	border: 5px solid var(--_secondary);
+	border: 6px solid #cba328;
 	box-shadow:
-		0 14px 44px rgba(0, 0, 0, 0.5),
-		0 4px 14px rgba(0, 0, 0, 0.25);
-	font-family: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000,
+		0 8px 24px rgba(0, 0, 0, 0.5);
+	font-family: 'Press Start 2P', monospace;
 	margin: 0 auto;
-	background: #0a1628;
+	background: #08126b;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 .nhlCard::after {
@@ -41,6 +44,9 @@
 	object-position: top center;
 	mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
 	-webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 .vPanel {
@@ -166,8 +172,9 @@
 
 .teamNameText {
 	color: var(--team-secondary, #000);
-	font-size: 1.2rem;
-	letter-spacing: 2px;
+	font-size: 0.7rem;
+	letter-spacing: 0.05em;
+	text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
 }
 
 .bannerBottom {
@@ -182,20 +189,20 @@
 
 .playerName {
 	color: #ffffff;
-	font-size: 1.15rem;
+	font-size: 0.7rem;
 	text-transform: uppercase;
-	font-weight: 900;
-	letter-spacing: 0.1em;
-	line-height: 1;
-	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+	font-weight: normal;
+	letter-spacing: 0.05em;
+	line-height: 1.2;
+	text-shadow: 1px 1px 0px #000000;
 }
 
 .playerNumber {
-	font-size: 0.85rem;
-	color: rgba(255, 255, 255, 0.88);
-	font-weight: 800;
-	letter-spacing: 0.08em;
-	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+	font-size: 0.6rem;
+	color: #cba328;
+	font-weight: normal;
+	letter-spacing: 0.05em;
+	text-shadow: 1px 1px 0px #000000;
 }
 
 /* Team color themes */

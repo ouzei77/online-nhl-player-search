@@ -2,17 +2,29 @@
 	padding: 0;
 	margin: 0;
 	box-sizing: border-box;
-	font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', sans-serif;
+	font-family: 'Press Start 2P', monospace;
 	color: #ffffff;
-	-webkit-font-smoothing: antialiased;
-	-moz-osx-font-smoothing: grayscale;
+	-webkit-font-smoothing: none;
+	-moz-osx-font-smoothing: unset;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
+	text-shadow: 1px 1px 0px #000000;
 }
 
 body {
-	background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%);
+	background: #08126b;
 	background-attachment: fixed;
 	color: #ffffff;
 	min-height: 100vh;
+	position: relative;
+}
+
+/* Pixelated image rendering */
+img {
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 /* App Layout */
@@ -20,6 +32,14 @@ body {
 	max-width: 1400px;
 	margin: 0 auto;
 	padding: 32px 24px;
+	position: relative;
+	background: #08126b;
+	border: 8px solid #cba328;
+	box-shadow: 
+		inset 0 0 0 2px #000000,
+		0 0 0 2px #000000;
+	margin-top: 20px;
+	margin-bottom: 100px; /* Space for scoreboard */
 }
 
 .search-section {
@@ -78,4 +98,26 @@ body {
 	.search-section {
 		margin-bottom: 32px;
 	}
+}
+
+/* Scoreboard Panel */
+.scoreboard-panel {
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	right: 0;
+	background: #000000;
+	color: #ffffff;
+	padding: 12px 24px;
+	font-family: 'Courier New', monospace;
+	font-size: 14px;
+	text-align: center;
+	border-top: 4px solid #cba328;
+	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
+	z-index: 1000;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 20px;
+	text-shadow: none;
 }
