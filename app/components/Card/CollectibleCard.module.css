@@ -150,41 +150,46 @@
 .bannerTop,
 .bannerBottom {
 	text-transform: uppercase;
-	font-weight: 900;
-	padding: 8px 30px;
-	transform: skewX(-20deg);
-	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+	font-weight: normal;
+	padding: 12px 24px;
 	text-align: center;
+	background: #000000;
+	color: #ffffff;
+	font-family: 'Courier New', monospace;
+	font-size: 12px;
+	border: 2px solid #cba328;
+	box-shadow: 
+		inset 0 0 0 1px #000000,
+		0 0 0 1px #000000;
+	text-shadow: none;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 .bannerTop span,
 .bannerBottom span {
 	display: block;
-	transform: skewX(20deg);
 }
 
 .bannerTop {
-	background: #fff;
 	width: 85%;
-	margin-bottom: 5px;
-	border-left: 8px solid var(--team-primary, #333);
+	margin-bottom: 8px;
 }
 
 .teamNameText {
-	color: var(--team-secondary, #000);
-	font-size: 0.7rem;
+	color: #ffffff;
+	font-size: 12px;
 	letter-spacing: 0.05em;
-	text-shadow: 1px 1px 0px rgba(255, 255, 255, 0.3);
+	text-shadow: none;
 }
 
 .bannerBottom {
-	background: var(--team-secondary, #041e42);
 	width: 70%;
-	border-left: 8px solid #fff;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	gap: 10px;
+	gap: 12px;
 }
 
 .playerName {

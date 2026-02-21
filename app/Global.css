@@ -39,7 +39,7 @@ img {
 		inset 0 0 0 2px #000000,
 		0 0 0 2px #000000;
 	margin-top: 20px;
-	margin-bottom: 100px; /* Space for scoreboard */
+	margin-bottom: 20px;
 }
 
 .search-section {
@@ -100,24 +100,3 @@ img {
 	}
 }
 
-/* Scoreboard Panel */
-.scoreboard-panel {
-	position: fixed;
-	bottom: 0;
-	left: 0;
-	right: 0;
-	background: #000000;
-	color: #ffffff;
-	padding: 12px 24px;
-	font-family: 'Courier New', monospace;
-	font-size: 14px;
-	text-align: center;
-	border-top: 4px solid #cba328;
-	box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.5);
-	z-index: 1000;
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
-	text-shadow: none;
-}
