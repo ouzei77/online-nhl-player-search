@@ -417,29 +417,29 @@
 /* Flip hint for mobile */
 .flipHint {
 	position: absolute;
-	bottom: 100px;
-	left: 50%;
-	transform: translateX(-50%);
+	top: 18px;
+	right: 18px;
 	z-index: 10;
 	display: none; /* Hidden by default, shown on mobile */
 	pointer-events: none;
-	text-align: center;
+	text-align: right;
 }
 
 .flipHintIcon {
-	font-size: 2rem;
+	font-size: 1.5rem;
 	color: #cba328;
-	margin-bottom: 8px;
+	margin-bottom: 4px;
 	animation: rotateHint 2s ease-in-out infinite;
 	text-shadow: 2px 2px 0px #000000;
 	filter: drop-shadow(0 0 8px rgba(203, 163, 40, 0.6));
+	display: block;
 }
 
 .flipHintText {
-	font-size: 0.6rem;
+	font-size: 0.5rem;
 	color: #ffffff;
-	background: rgba(0, 0, 0, 0.8);
-	padding: 8px 16px;
+	background: rgba(0, 0, 0, 0.85);
+	padding: 6px 12px;
 	border: 2px solid #cba328;
 	border-radius: 4px;
 	text-shadow: 1px 1px 0px #000000;
@@ -449,6 +449,7 @@
 		0 4px 12px rgba(0, 0, 0, 0.5);
 	font-family: 'Press Start 2P', monospace;
 	letter-spacing: 0.05em;
+	white-space: nowrap;
 }
 
 @keyframes rotateHint {

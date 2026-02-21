@@ -174,4 +174,91 @@ td.seasonType {
         overflow-y: visible;
         padding: 16px;
     }
+
+    /* Compact stats for mobile flip card */
+    .statsSection {
+        margin-bottom: 20px;
+    }
+
+    .statsTitle {
+        font-size: 0.6rem;
+        margin-bottom: 10px;
+        padding-bottom: 6px;
+    }
+
+    .statsTable {
+        font-size: 0.55rem;
+    }
+
+    .statsTable th {
+        padding: 8px 6px;
+        font-size: 0.5rem;
+    }
+
+    .statsTable td {
+        padding: 8px 6px;
+        font-size: 0.55rem;
+    }
+
+    .seasonHistoryTable th:first-child {
+        font-size: 0.5rem;
+    }
+
+    td.seasonLabel {
+        padding-top: 8px;
+        padding-right: 10px;
+        font-size: 0.5rem;
+    }
+
+    .teamLabel {
+        font-size: 0.45rem;
+        margin-top: 2px;
+    }
+
+    td.seasonType {
+        font-size: 0.45rem;
+        padding-left: 12px;
+    }
+
+    .playerName {
+        font-size: 0.6rem;
+    }
+
+    .playerNumber {
+        font-size: 0.5rem;
+    }
+
+    /* Ensure tables don't overflow horizontally */
+    .statsTable {
+        table-layout: fixed;
+        width: 100%;
+    }
+
+    .statsTable th,
+    .statsTable td {
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+    }
+
+    /* Make season history table more compact */
+    .seasonHistoryTable {
+        font-size: 0.5rem;
+    }
+
+    .seasonHistoryTable th {
+        padding: 6px 4px;
+        font-size: 0.45rem;
+    }
+
+    .seasonHistoryTable td {
+        padding: 6px 4px;
+        font-size: 0.5rem;
+    }
+
+    /* Reduce spacing in banners if they appear */
+    .bannerTop,
+    .bannerBottom {
+        padding: 8px 16px;
+        font-size: 10px;
+    }
 }
