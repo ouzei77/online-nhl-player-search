@@ -108,3 +108,23 @@ td.seasonType {
 .regularRow:hover {
     background-color: #2a2a2a;
 }
+
+.clickableTitle {
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+.clickableTitle:hover {
+    color: #e0e0e0;
+}
+
+.dropdownIcon {
+    font-size: 0.9rem;
+    margin-left: 10px;
+    transition: transform 0.2s ease;
+    color: #cccccc;
+}

@@ -130,130 +130,142 @@ interface SeasonHistoryTableProps {
 }
 
 const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
+	const [isExpanded, setIsExpanded] = React.useState(false);
+
 	if (!seasons || seasons.length === 0) return null;
 
 	return (
 		<div className={styles.statsSection}>
-			<h3 className={styles.statsTitle}>Last 5 Seasons</h3>
-			<table className={`${styles.statsTable} ${styles.seasonHistoryTable}`}>
-				<thead>
-					<tr>
-						<th>Season</th>
-						<th>Game Type</th>
-						{!isGoalie ? (
-							<>
-								<th>GP</th>
-								<th className={styles.bordered}>G</th>
-								<th>A</th>
-								<th className={styles.bordered}>P</th>
-								<th>+/-</th>
-							</>
-						) : (
-							<>
-								<th>GP</th>
-								<th className={styles.bordered}>W</th>
-								<th>SO</th>
-								<th className={styles.bordered}>SV %</th>
-								<th>GAA</th>
-							</>
-						)}
-					</tr>
-				</thead>
-				<tbody>
-					{seasons.map((season, idx) => {
-						// Always show both rows (regular season and playoffs) for each season
-						// Each season always has 2 rows, so rowSpan is always 2
-						const rowSpan = 2;
+			<h3 
+				className={`${styles.statsTitle} ${styles.clickableTitle}`}
+				onClick={() => setIsExpanded(!isExpanded)}
+			>
+				Last 5 Seasons
+				<span className={styles.dropdownIcon}>
+					{isExpanded ? '▼' : '▶'}
+				</span>
+			</h3>
+			{isExpanded && (
+				<table className={`${styles.statsTable} ${styles.seasonHistoryTable}`}>
+					<thead>
+						<tr>
+							<th>Season</th>
+							<th>Game Type</th>
+							{!isGoalie ? (
+								<>
+									<th>GP</th>
+									<th className={styles.bordered}>G</th>
+									<th>A</th>
+									<th className={styles.bordered}>P</th>
+									<th>+/-</th>
+								</>
+							) : (
+								<>
+									<th>GP</th>
+									<th className={styles.bordered}>W</th>
+									<th>SO</th>
+									<th className={styles.bordered}>SV %</th>
+									<th>GAA</th>
+								</>
+							)}
+						</tr>
+					</thead>
+					<tbody>
+						{seasons.map((season, idx) => {
+							// Always show both rows (regular season and playoffs) for each season
+							// Each season always has 2 rows, so rowSpan is always 2
+							const rowSpan = 2;
 
-						// Render regular season row (always shown)
-						const regularRow = (
-							<tr key={`regular-${idx}`} className={styles.regularRow}>
-								<td className={styles.seasonLabel} rowSpan={rowSpan}>
-									<div>{formatSeason(season.season)}</div>
-									{season.team && (
-										<div className={styles.teamLabel}>{season.team}</div>
+							// Render regular season row (always shown)
+							const regularRow = (
+								<tr key={`regular-${idx}`} className={styles.regularRow}>
+									<td className={styles.seasonLabel} rowSpan={rowSpan}>
+										<div>{formatSeason(season.season)}</div>
+										{season.team && (
+											<div className={styles.teamLabel}>{season.team}</div>
+										)}
+									</td>
+									<td className={styles.seasonType}>Regular Season</td>
+									{!isGoalie ? (
+										<>
+											<td>{(season.regular as SkaterStats)?.games_played ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.regular as SkaterStats)?.goals ?? '-'}
+											</td>
+											<td>{(season.regular as SkaterStats)?.assists ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.regular as SkaterStats)?.points ?? '-'}</td>
+											<td>{(season.regular as SkaterStats)?.plus_minus ?? '-'}</td>
+										</>
+									) : (
+										<>
+											<td>{(season.regular as GoalieStats)?.games_played ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.regular as GoalieStats)?.wins ?? '-'}
+											</td>
+											<td>{(season.regular as GoalieStats)?.shutouts ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.regular as GoalieStats)?.saves_pct != null && (season.regular as GoalieStats).saves_pct! > 0
+													? `${((season.regular as GoalieStats).saves_pct! * 100).toFixed(1)}%`
+													: '-'}
+											</td>
+											<td>
+												{(season.regular as GoalieStats)?.avg_goals_against != null && (season.regular as GoalieStats).avg_goals_against! > 0
+													? (season.regular as GoalieStats).avg_goals_against!.toFixed(2)
+													: '-'}
+											</td>
+										</>
 									)}
-								</td>
-								<td className={styles.seasonType}>Regular Season</td>
-								{!isGoalie ? (
-									<>
-										<td>{(season.regular as SkaterStats)?.games_played ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.regular as SkaterStats)?.goals ?? '-'}
-										</td>
-										<td>{(season.regular as SkaterStats)?.assists ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.regular as SkaterStats)?.points ?? '-'}</td>
-										<td>{(season.regular as SkaterStats)?.plus_minus ?? '-'}</td>
-									</>
-								) : (
-									<>
-										<td>{(season.regular as GoalieStats)?.games_played ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.regular as GoalieStats)?.wins ?? '-'}
-										</td>
-										<td>{(season.regular as GoalieStats)?.shutouts ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.regular as GoalieStats)?.saves_pct != null && (season.regular as GoalieStats).saves_pct! > 0
-												? `${((season.regular as GoalieStats).saves_pct! * 100).toFixed(1)}%`
-												: '-'}
-										</td>
-										<td>
-											{(season.regular as GoalieStats)?.avg_goals_against != null && (season.regular as GoalieStats).avg_goals_against! > 0
-												? (season.regular as GoalieStats).avg_goals_against!.toFixed(2)
-												: '-'}
-										</td>
-									</>
-								)}
-							</tr>
-						);
+								</tr>
+							);
 
-						// Render playoffs row (always shown, even if no playoff stats)
-						const playoffsRow = (
-							<tr key={`playoffs-${idx}`} className={styles.playoffsRow}>
-								<td className={styles.seasonType}>Playoffs</td>
-								{!isGoalie ? (
-									<>
-										<td>{(season.playoffs as SkaterStats)?.games_played ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.playoffs as SkaterStats)?.goals ?? '-'}
-										</td>
-										<td>{(season.playoffs as SkaterStats)?.assists ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.playoffs as SkaterStats)?.points ?? '-'}</td>
-										<td>{(season.playoffs as SkaterStats)?.plus_minus ?? '-'}</td>
-									</>
-								) : (
-									<>
-										<td>{(season.playoffs as GoalieStats)?.games_played ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.playoffs as GoalieStats)?.wins ?? '-'}
-										</td>
-										<td>{(season.playoffs as GoalieStats)?.shutouts ?? '-'}</td>
-										<td className={styles.bordered}>
-											{(season.playoffs as GoalieStats)?.saves_pct != null && (season.playoffs as GoalieStats).saves_pct! > 0
-												? `${((season.playoffs as GoalieStats).saves_pct! * 100).toFixed(1)}%`
-												: '-'}
-										</td>
-										<td>
-											{(season.playoffs as GoalieStats)?.avg_goals_against != null && (season.playoffs as GoalieStats).avg_goals_against! > 0
-												? (season.playoffs as GoalieStats).avg_goals_against!.toFixed(2)
-												: '-'}
-										</td>
-									</>
-								)}
-							</tr>
-						);
+							// Render playoffs row (always shown, even if no playoff stats)
+							const playoffsRow = (
+								<tr key={`playoffs-${idx}`} className={styles.playoffsRow}>
+									<td className={styles.seasonType}>Playoffs</td>
+									{!isGoalie ? (
+										<>
+											<td>{(season.playoffs as SkaterStats)?.games_played ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.playoffs as SkaterStats)?.goals ?? '-'}
+											</td>
+											<td>{(season.playoffs as SkaterStats)?.assists ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.playoffs as SkaterStats)?.points ?? '-'}</td>
+											<td>{(season.playoffs as SkaterStats)?.plus_minus ?? '-'}</td>
+										</>
+									) : (
+										<>
+											<td>{(season.playoffs as GoalieStats)?.games_played ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.playoffs as GoalieStats)?.wins ?? '-'}
+											</td>
+											<td>{(season.playoffs as GoalieStats)?.shutouts ?? '-'}</td>
+											<td className={styles.bordered}>
+												{(season.playoffs as GoalieStats)?.saves_pct != null && (season.playoffs as GoalieStats).saves_pct! > 0
+													? `${((season.playoffs as GoalieStats).saves_pct! * 100).toFixed(1)}%`
+													: '-'}
+											</td>
+											<td>
+												{(season.playoffs as GoalieStats)?.avg_goals_against != null && (season.playoffs as GoalieStats).avg_goals_against! > 0
+													? (season.playoffs as GoalieStats).avg_goals_against!.toFixed(2)
+													: '-'}
+											</td>
+										</>
+									)}
+								</tr>
+							);
 
-						return (
-							<React.Fragment key={idx}>
-								{regularRow}
-								{playoffsRow}
-							</React.Fragment>
-						);
-					})}
-				</tbody>
-			</table>
+							return (
+								<React.Fragment key={idx}>
+									{regularRow}
+									{playoffsRow}
+								</React.Fragment>
+							);
+						})}
+					</tbody>
+				</table>
+			)}
 		</div>
 	);
 };
