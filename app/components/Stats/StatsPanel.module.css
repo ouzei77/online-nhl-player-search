@@ -1,101 +1,110 @@
 .statsPanel {
-	background: #1a1a1a;
-	border-radius: 12px;
-	padding: 25px;
-	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-	display: flex;
-	flex-direction: column;
-	color: #ffffff;
+    background: #1a1a1a;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    color: #ffffff;
 }
 
 .statsSection {
-	margin-bottom: 30px;
+    margin-bottom: 30px;
 }
 
 .statsSection:last-child {
-	margin-bottom: 0;
+    margin-bottom: 0;
 }
 
 .statsTitle {
-	font-size: 1.3rem;
-	font-weight: bold;
-	margin-bottom: 15px;
-	color: #ffffff;
-	border-bottom: 2px solid #e0e0e0;
-	padding-bottom: 8px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #ffffff;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 8px;
 }
 
 .statsTable {
-	width: 100%;
-	border-collapse: collapse;
-	font-size: 0.95rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
 }
 
 .statsTable thead {
-	background-color: #2a2a2a;
+    background-color: #2a2a2a;
 }
 
 .statsTable th {
-	padding: 12px 8px;
-	text-align: center;
-	font-weight: 600;
-	color: #ffffff;
-	border-bottom: 2px solid #ddd;
+    padding: 12px 8px;
+    text-align: center;
+    font-weight: 600;
+    color: #ffffff;
+    border-bottom: 2px solid #ddd;
 }
 
 .bordered {
-	border-left: 1px solid #ddd;
-	border-right: 1px solid #ddd;
+    border-left: 1px solid #ddd;
+    border-right: 1px solid #ddd;
 }
 
 .statsTable td {
-	padding: 10px 8px;
-	text-align: center;
-	border-bottom: 1px solid #eee;
-	color: #ffffff;
+    padding: 10px 8px;
+    text-align: center;
+    border-bottom: 1px solid #eee;
+    color: #ffffff;
 }
 
 .statsTable tbody tr:hover {
-	background-color: #2a2a2a;
+    background-color: #2a2a2a;
 }
 
-.seasonHistoryTable th:first-child,
-.seasonHistoryTable td:first-child {
-	text-align: left;
-	font-weight: 600;
-	color: #ffffff;
+/* Fixed: Removed td:first-child so it doesn't target the Playoffs row incorrectly */
+.seasonHistoryTable th:first-child {
+    text-align: left;
+    font-weight: 600;
+    color: #ffffff;
 }
 
-.seasonHistoryTable th:nth-child(2),
-.seasonHistoryTable td:nth-child(2) {
-	text-align: left;
-	padding-left: 20px;
+/* Fixed: Removed td:nth-child(2) so it doesn't target the GP column incorrectly */
+.seasonHistoryTable th:nth-child(2) {
+    text-align: left;
+    padding-left: 20px;
 }
 
 .seasonLabel {
-	font-weight: 600;
-	color: #ffffff;
-	vertical-align: top;
-	padding-top: 12px;
-	padding-right: 15px;
+    font-weight: 600;
+    color: #ffffff;
+    vertical-align: top;
+    padding-top: 12px;
+    padding-right: 15px;
+    text-align: left; /* Added to keep the season years left-aligned */
+}
+
+.teamLabel {
+    font-weight: 400;
+    color: #cccccc;
+    font-size: 0.85rem;
+    margin-top: 4px;
 }
 
 .seasonType {
-	font-weight: 500;
-	color: #cccccc;
-	font-size: 0.9rem;
-	text-align: left;
+    font-weight: 500;
+    color: #cccccc;
+    font-size: 0.9rem;
+    text-align: left;
+    padding-left: 20px; /* Added to ensure Game Type lines up perfectly with the header */
 }
 
 .regularRow {
-	background-color: #1a1a1a;
+    background-color: #1a1a1a;
 }
 
 .playoffsRow {
-	background-color: #222222;
+    background-color: #222222;
 }
 
 .playoffsRow:hover,
 .regularRow:hover {
-	background-color: #2a2a2a;
+    background-color: #2a2a2a;
 }
