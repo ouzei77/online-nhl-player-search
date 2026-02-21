@@ -458,8 +458,10 @@
 	}
 	
 	/* Hide flip hint when card is flipped (backside) */
-	.nhlCard.flipped .flipHint,
-	.flip-card-container.flipped .flipHint {
+	.nhlCard.flipped .flipHint {
 		display: none !important;
+		visibility: hidden !important;
+		opacity: 0 !important;
+		pointer-events: none !important;
 	}
 }

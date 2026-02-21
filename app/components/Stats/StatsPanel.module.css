@@ -129,8 +129,15 @@ td.seasonType {
 
 /* Mobile combined column design for flip card */
 .mobileCombined th:first-child {
-    width: auto;
-    min-width: 80px;
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
+}
+
+.mobileCombined td:first-child {
+    width: 110px !important;
+    min-width: 110px !important;
+    max-width: 110px !important;
 }
 
 .seasonLabelCombined {
@@ -283,10 +290,23 @@ td.seasonType {
     }
 
     /* Mobile combined column styling */
+    .mobileCombined th:first-child {
+        min-width: 110px !important;
+        max-width: 110px !important;
+        width: 110px !important;
+    }
+
+    .mobileCombined td:first-child {
+        min-width: 110px !important;
+        max-width: 110px !important;
+        width: 110px !important;
+    }
+
     .mobileCombined .seasonLabelCombined {
         font-size: 0.45rem;
         padding: 4px 6px;
         line-height: 1.2;
+        white-space: nowrap;
     }
 
     /* Reduce spacing in banners if they appear */

@@ -223,6 +223,13 @@ img {
 		transform: rotateY(0deg);
 	}
 
+	/* Hide flip hint when card is flipped (backside) */
+	.flip-card-container.flipped .flip-card-front .flipHint {
+		display: none !important;
+		visibility: hidden !important;
+		opacity: 0 !important;
+	}
+
 	/* Show flip back button on mobile */
 	.flip-back-button-wrapper {
 		display: block;

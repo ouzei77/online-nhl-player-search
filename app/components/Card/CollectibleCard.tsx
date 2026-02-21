@@ -72,7 +72,7 @@ export default function CollectibleCard({
 
 	return (
 		<div 
-			className={`${styles.nhlCard} ${teamClassName} ${onFlip ? styles.clickable : ''}`}
+			className={`${styles.nhlCard} ${teamClassName} ${onFlip ? styles.clickable : ''} ${isFlipped ? styles.flipped : ''}`}
 			onClick={onFlip}
 			role={onFlip ? 'button' : undefined}
 			tabIndex={onFlip ? 0 : undefined}
