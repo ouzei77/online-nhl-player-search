@@ -4,7 +4,8 @@
 	--_accent: var(--team-accent, #ffffff);
 
 	width: var(--card-width, 400px);
-	height: var(--card-height, 711px);
+	height: 100%;
+	min-height: 711px;
 	position: relative;
 	overflow: hidden;
 	border: 6px solid #cba328;
@@ -401,4 +402,12 @@
 	--team-primary: #004c97;
 	--team-secondary: #041e42;
 	--team-accent: #ac162c;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+	.nhlCard {
+		height: auto;
+		min-height: 711px;
+	}
 }

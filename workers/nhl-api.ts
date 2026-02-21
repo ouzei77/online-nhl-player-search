@@ -410,21 +410,38 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			plusMinus: src.plusMinus ?? src.plus_minus ?? 0
 		});
 
-		const normalizeGoalieTotals = (src: any = {}) => ({
-			games: src.gamesPlayed ?? src.games ?? src.gp ?? 0,
-			wins: src.wins ?? src.w ?? 0,
-			shutouts: src.shutouts ?? src.so ?? 0,
-			savePercentage:
-				src.savePctg ??
-				src.savePct ??
-				src.savePercentage ??
-				src.savesPct ??
-				null,
-			goalAgainstAverage:
+		const normalizeGoalieTotals = (src: any = {}) => {
+			const games = src.gamesPlayed ?? src.games ?? src.gp ?? 0;
+			const goalsAgainst = src.goalsAgainst ?? src.ga ?? null;
+			
+			// Try multiple field name variations for GAA
+			// Note: The API actually uses 'goalsAgainstAvg' (with 's'), so check that first
+			let goalAgainstAverage = 
+				src.goalsAgainstAvg ??
 				src.goalAgainstAverage ??
 				src.gaa ??
-				null
-		});
+				src.goalAgainstAvg ??
+				src.goalsAgainstAverage ??
+				null;
+			
+			// If GAA is not directly available, calculate it from goals against and games played
+			if (goalAgainstAverage == null && goalsAgainst != null && games > 0) {
+				goalAgainstAverage = goalsAgainst / games;
+			}
+			
+			return {
+				games,
+				wins: src.wins ?? src.w ?? 0,
+				shutouts: src.shutouts ?? src.so ?? 0,
+				savePercentage:
+					src.savePctg ??
+					src.savePct ??
+					src.savePercentage ??
+					src.savesPct ??
+					null,
+				goalAgainstAverage
+			};
+		};
 
 		// Last 5 NHL seasons - include both regular season and playoffs
 		// seasonTotals is an array where each entry has gameTypeId (2 = regular, 3 = playoffs)

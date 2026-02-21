@@ -365,7 +365,9 @@ Each roster entry contains minimal player information:
 | `wins` | `number` | Wins |
 | `shutouts` | `number` | Shutouts |
 | `savePctg` / `savePercentage` | `number` | Save percentage (0.0 to 1.0) |
-| `goalAgainstAverage` / `gaa` | `number` | Goals against average |
+| `goalsAgainstAvg` | `number` | Goals against average (primary field name used by API) |
+| `goalAgainstAverage` / `gaa` | `number` | Goals against average (alternative field names) |
+| `goalsAgainst` | `number` | Total goals against (used to calculate GAA if needed) |
 | `avgToi` | `string` | Average time on ice (format: "MM:SS") |
 
 ## Example Response

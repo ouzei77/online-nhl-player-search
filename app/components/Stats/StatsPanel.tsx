@@ -94,7 +94,7 @@ const GoalieStatsTable = ({ stats, title }: GoalieStatsTableProps) => {
 								: '-'}
 						</td>
 						<td>
-							{hasStats && stats.avg_goals_against != null && stats.avg_goals_against > 0
+							{hasStats && stats.avg_goals_against != null && stats.avg_goals_against >= 0
 								? stats.avg_goals_against.toFixed(2)
 								: '-'}
 						</td>
@@ -198,7 +198,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 													: '-'}
 											</td>
 											<td>
-												{(season.regular as GoalieStats)?.avg_goals_against != null && (season.regular as GoalieStats).avg_goals_against! > 0
+												{(season.regular as GoalieStats)?.avg_goals_against != null && (season.regular as GoalieStats).avg_goals_against! >= 0
 													? (season.regular as GoalieStats).avg_goals_against!.toFixed(2)
 													: '-'}
 											</td>
@@ -235,7 +235,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 													: '-'}
 											</td>
 											<td>
-												{(season.playoffs as GoalieStats)?.avg_goals_against != null && (season.playoffs as GoalieStats).avg_goals_against! > 0
+												{(season.playoffs as GoalieStats)?.avg_goals_against != null && (season.playoffs as GoalieStats).avg_goals_against! >= 0
 													? (season.playoffs as GoalieStats).avg_goals_against!.toFixed(2)
 													: '-'}
 											</td>
