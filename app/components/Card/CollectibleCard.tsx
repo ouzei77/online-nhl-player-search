@@ -100,10 +100,21 @@ export default function CollectibleCard({
 			<div className={styles.nhlCardContent}>
 				{/* Team logo top left */}
 				<div className={styles.teamLogoTopLeft}>
-					{playerData?.team?.logoUrl && (
+					{playerData?.team?.logoUrl ? (
 						<img
 							src={playerData.team.logoUrl}
 							alt={teamName}
+							className={styles.teamLogo}
+							onError={(e) => {
+								// Hide broken logo rather than showing broken image icon
+								e.currentTarget.style.display = 'none';
+							}}
+						/>
+					) : (
+						// Show NHL.ico when no player is displayed
+						<img
+							src="/NHL.ico"
+							alt="NHL"
 							className={styles.teamLogo}
 							onError={(e) => {
 								// Hide broken logo rather than showing broken image icon
