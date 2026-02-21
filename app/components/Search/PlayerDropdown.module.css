@@ -3,49 +3,91 @@
 	top: 100%;
 	left: 0;
 	right: 0;
-	margin-top: 4px;
-	background-color: #1a1a1a;
-	border: 1px solid #333;
-	border-radius: 5px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+	margin-top: 8px;
+	background-color: rgba(26, 26, 26, 0.95);
+	backdrop-filter: blur(20px);
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 12px;
+	box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(255, 255, 255, 0.05);
 	z-index: 1000;
-	max-height: 300px;
+	max-height: 320px;
 	overflow: hidden;
+	animation: slideDown 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideDown {
+	from {
+		opacity: 0;
+		transform: translateY(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .dropdownList {
 	list-style: none;
-	padding: 0;
+	padding: 4px;
 	margin: 0;
-	max-height: 250px;
+	max-height: 300px;
 	overflow-y: auto;
+	scrollbar-width: thin;
+	scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.dropdownList::-webkit-scrollbar {
+	width: 6px;
+}
+
+.dropdownList::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.dropdownList::-webkit-scrollbar-thumb {
+	background-color: rgba(255, 255, 255, 0.2);
+	border-radius: 3px;
+}
+
+.dropdownList::-webkit-scrollbar-thumb:hover {
+	background-color: rgba(255, 255, 255, 0.3);
 }
 
 .dropdownItem {
-	padding: 12px 16px;
+	padding: 14px 18px;
 	cursor: pointer;
-	border-bottom: 1px solid #2a2a2a;
-	transition: background-color 0.2s;
+	border-radius: 8px;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 	display: flex;
 	flex-direction: column;
 	gap: 4px;
+	margin-bottom: 2px;
 }
 
 .dropdownItem:hover {
-	background-color: #2a2a2a;
+	background-color: rgba(255, 255, 255, 0.08);
+	transform: translateX(2px);
+}
+
+.dropdownItem:active {
+	background-color: rgba(255, 255, 255, 0.12);
+	transform: translateX(0);
 }
 
 .dropdownItem:last-child {
-	border-bottom: none;
+	margin-bottom: 0;
 }
 
 .playerName {
 	color: #ffffff;
-	font-size: 16px;
+	font-size: 15px;
 	font-weight: 500;
+	letter-spacing: -0.01em;
 }
 
 .teamName {
-	color: #aaaaaa;
+	color: rgba(255, 255, 255, 0.6);
 	font-size: 13px;
+	font-weight: 400;
+	letter-spacing: -0.01em;
 }
