@@ -560,7 +560,7 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				playoffs: playoffsStats,
 				team: teamAbbrev || null  // Only return abbreviation, never full name
 			};
-		}));
+		});
 
 		// Career totals
 		const careerBase =
