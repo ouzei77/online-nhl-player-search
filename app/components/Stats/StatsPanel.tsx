@@ -165,7 +165,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 						const rowSpan = (hasRegular ? 1 : 0) + (hasPlayoffs ? 1 : 0);
 						
 						if (rowSpan === 0) return null;
-						
+
 						// Render regular season row
 						const regularRow = hasRegular ? (
 							<tr key={`regular-${idx}`} className={styles.regularRow}>
@@ -181,8 +181,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 										</td>
 										<td>{(season.regular as SkaterStats)?.assists ?? '-'}</td>
 										<td className={styles.bordered}>
-											{(season.regular as SkaterStats)?.points ?? '-'}
-										</td>
+											{(season.regular as SkaterStats)?.points ?? '-'}</td>
 										<td>{(season.regular as SkaterStats)?.plus_minus ?? '-'}</td>
 									</>
 								) : (
@@ -210,11 +209,13 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 						// Render playoffs row
 						const playoffsRow = hasPlayoffs ? (
 							<tr key={`playoffs-${idx}`} className={styles.playoffsRow}>
-								{!hasRegular && (
-									<td className={styles.seasonLabel} rowSpan={1}>
-										{formatSeason(season.season)}
-									</td>
-								)}
+								<td 
+									className={styles.seasonLabel} 
+									rowSpan={1} 
+									style={hasRegular ? { visibility: 'hidden', padding: 0, border: 0 } : undefined}
+								>
+									{!hasRegular ? formatSeason(season.season) : null}
+								</td>
 								<td className={styles.seasonType}>Playoffs</td>
 								{!isGoalie ? (
 									<>
@@ -224,8 +225,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 										</td>
 										<td>{(season.playoffs as SkaterStats)?.assists ?? '-'}</td>
 										<td className={styles.bordered}>
-											{(season.playoffs as SkaterStats)?.points ?? '-'}
-										</td>
+											{(season.playoffs as SkaterStats)?.points ?? '-'}</td>
 										<td>{(season.playoffs as SkaterStats)?.plus_minus ?? '-'}</td>
 									</>
 								) : (
