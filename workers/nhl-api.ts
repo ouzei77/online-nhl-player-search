@@ -258,6 +258,9 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 	if (firstNameRaw) {
 		cayenneExp = `firstName like '${escapeSqlString(firstNameRaw)}%' and ${cayenneExp}`;
 	}
+	
+	// Only include players with an active team (currentTeamId is not null)
+	cayenneExp = `currentTeamId is not null and ${cayenneExp}`;
 
 	const url = `${NHL_STATS_API_BASE}/players?sort=lastName&limit=25&cayenneExp=${encodeURIComponent(cayenneExp)}`;
 
@@ -296,12 +299,14 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 				
 				if (!playerId || !fullName) return null;
 				
-				// Lookup team name if teamId is available
-				let teamName = null;
-				if (teamId) {
-					const team = await lookupTeamById(teamId);
-					teamName = team?.fullName || null;
-				}
+				// Only include players with an active team (on a roster)
+				if (!teamId) return null;
+				
+				// Lookup team name - if team doesn't exist, player is not active
+				const team = await lookupTeamById(teamId);
+				if (!team) return null; // Team not found = player not on active roster
+				
+				const teamName = team.fullName || null;
 				
 				return {
 					playerId,
@@ -310,20 +315,22 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 					teamName
 				};
 			})
-			.filter(Boolean)
 	);
+	
+	// Filter out null values (players without active teams)
+	const validCandidates = candidates.filter((c: any) => c !== null);
 
-	if (!candidates.length) {
+	if (!validCandidates.length) {
 		return [];
 	}
 
 	// Sort candidates: exact match first, then by relevance
-	const exactMatch = candidates.find((c: any) => normalize(c.fullName) === inputNorm);
+	const exactMatch = validCandidates.find((c: any) => normalize(c.fullName) === inputNorm);
 	
 	// If exact match found, put it first, otherwise use all candidates
 	const sortedCandidates = exactMatch
-		? [exactMatch, ...candidates.filter((c: any) => c !== exactMatch)]
-		: candidates;
+		? [exactMatch, ...validCandidates.filter((c: any) => c !== exactMatch)]
+		: validCandidates;
 
 	// Return top 5 candidates
 	return sortedCandidates.slice(0, 5);
