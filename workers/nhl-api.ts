@@ -643,7 +643,8 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				? (!isGoalie
 					? formatSkaterStats(season.playoffs)
 					: formatGoalieStats(season.playoffs))
-				: null
+				: null,
+			team: season.team || null
 		}));
 
 		return {
