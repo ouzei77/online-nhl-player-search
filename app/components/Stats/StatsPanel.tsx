@@ -121,7 +121,6 @@ interface Season {
 	season: string;
 	regular: SkaterStats | GoalieStats | null;
 	playoffs: SkaterStats | GoalieStats | null;
-	teamName: string | null;
 }
 
 interface SeasonHistoryTableProps {
@@ -139,7 +138,6 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 				<thead>
 					<tr>
 						<th>Season</th>
-						<th>Team</th>
 						<th>Type</th>
 						{!isGoalie ? (
 							<>
@@ -175,9 +173,6 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 									<tr className={styles.regularRow}>
 										<td className={styles.seasonLabel} rowSpan={rowSpan}>
 											{formatSeason(season.season)}
-										</td>
-										<td className={styles.teamName} rowSpan={rowSpan}>
-											{season.teamName || '-'}
 										</td>
 										<td className={styles.seasonType}>Regular Season</td>
 										{!isGoalie ? (
@@ -217,14 +212,9 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 								{hasPlayoffs && (
 									<tr className={styles.playoffsRow}>
 										{!hasRegular && (
-											<>
-												<td className={styles.seasonLabel} rowSpan={1}>
-													{formatSeason(season.season)}
-												</td>
-												<td className={styles.teamName} rowSpan={1}>
-													{season.teamName || '-'}
-												</td>
-											</>
+											<td className={styles.seasonLabel} rowSpan={1}>
+												{formatSeason(season.season)}
+											</td>
 										)}
 										<td className={styles.seasonType}>Playoffs</td>
 										{!isGoalie ? (

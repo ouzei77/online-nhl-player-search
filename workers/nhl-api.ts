@@ -296,9 +296,6 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 				
 				if (!playerId || !fullName) return null;
 				
-				// Filter out players without a team
-				if (!teamId) return null;
-				
 				// Lookup team name if teamId is available
 				let teamName = null;
 				if (teamId) {
@@ -445,60 +442,35 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				: null;
 
 		// Last 5 NHL seasons - include both regular season and playoffs
-		const regularSeasons = await Promise.all(
-			seasonTotalsArray
-				.filter((s: any) => s.leagueAbbrev === 'NHL')
-				.sort((a: any, b: any) => {
-					const sa = parseInt(String(a.season || '0'), 10);
-					const sb = parseInt(String(b.season || '0'), 10);
-					return sb - sa;
-				})
-				.slice(0, 5)
-				.map(async (s: any) => {
-					const seasonId = String(s.season || '');
-					const regularBase = s.regularSeason || s;
-					const playoffsBase = s.playoffs || null;
-					
-					const regularStats = !isGoalie
-						? normalizeSkaterTotals(regularBase)
-						: normalizeGoalieTotals(regularBase);
-					
-					const playoffsStats = playoffsBase
-						? (!isGoalie
-							? normalizeSkaterTotals(playoffsBase)
-							: normalizeGoalieTotals(playoffsBase))
-						: null;
-					
-					// Get team information for this season
-					// Try multiple possible fields for team information
-					const teamId = s.teamId || regularBase?.teamId || s.currentTeamId || null;
-					const teamAbbrev = s.teamAbbrev || regularBase?.teamAbbrev || s.currentTeamAbbrev || null;
-					const teamNameRaw = s.teamName || regularBase?.teamName || null;
-					let teamName = null;
-					
-					// First try to resolve from teamId
-					if (teamId) {
-						const team = await lookupTeamById(teamId);
-						teamName = team?.fullName || null;
-					}
-					// Fall back to teamAbbrev if teamId didn't work
-					if (!teamName && teamAbbrev) {
-						const team = await lookupTeamByTricode(teamAbbrev);
-						teamName = team?.fullName || null;
-					}
-					// Use raw team name if available and nothing else worked
-					if (!teamName && teamNameRaw) {
-						teamName = typeof teamNameRaw === 'string' ? teamNameRaw : resolveLocalizedString(teamNameRaw);
-					}
-					
-					return {
-						season: seasonId,
-						regular: regularStats,
-						playoffs: playoffsStats,
-						teamName: teamName
-					};
-				})
-		);
+		const regularSeasons = seasonTotalsArray
+			.filter((s: any) => s.leagueAbbrev === 'NHL')
+			.sort((a: any, b: any) => {
+				const sa = parseInt(String(a.season || '0'), 10);
+				const sb = parseInt(String(b.season || '0'), 10);
+				return sb - sa;
+			})
+			.slice(0, 5)
+			.map((s: any) => {
+				const seasonId = String(s.season || '');
+				const regularBase = s.regularSeason || s;
+				const playoffsBase = s.playoffs || null;
+				
+				const regularStats = !isGoalie
+					? normalizeSkaterTotals(regularBase)
+					: normalizeGoalieTotals(regularBase);
+				
+				const playoffsStats = playoffsBase
+					? (!isGoalie
+						? normalizeSkaterTotals(playoffsBase)
+						: normalizeGoalieTotals(playoffsBase))
+					: null;
+				
+				return {
+					season: seasonId,
+					regular: regularStats,
+					playoffs: playoffsStats
+				};
+			});
 
 		// Career totals
 		const careerBase =

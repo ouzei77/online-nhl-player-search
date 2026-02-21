@@ -69,14 +69,6 @@
 .seasonHistoryTable th:nth-child(2),
 .seasonHistoryTable td:nth-child(2) {
 	text-align: left;
-	font-weight: 500;
-	color: #ffffff;
-	padding-left: 10px;
-}
-
-.seasonHistoryTable th:nth-child(3),
-.seasonHistoryTable td:nth-child(3) {
-	text-align: left;
 	padding-left: 20px;
 }
 
@@ -86,14 +78,6 @@
 	vertical-align: top;
 	padding-top: 12px;
 	padding-right: 15px;
-}
-
-.teamName {
-	font-weight: 500;
-	color: #ffffff;
-	vertical-align: top;
-	padding-top: 12px;
-	font-size: 0.9rem;
 }
 
 .seasonType {
