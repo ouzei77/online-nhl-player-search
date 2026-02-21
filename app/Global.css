@@ -175,6 +175,8 @@ img {
 		min-height: 711px;
 		position: relative;
 		perspective: 1000px;
+		/* Extra space so the card's box-shadow isn't clipped */
+		padding-bottom: 12px;
 	}
 
 	.flip-card-front {
@@ -250,18 +252,11 @@ img {
 		margin-bottom: 0;
 	}
 
-	/* Stats panel inside flip card back - remove border to avoid double border */
-	.flip-card-back .statsPanel {
-		height: calc(100% - 0px);
-		max-height: 711px;
-		overflow-y: auto;
-		overflow-x: hidden;
-		padding: 100px 10px 10px 10px;
-		border: none !important;
-		box-shadow: none !important;
-		background: transparent;
-		-webkit-overflow-scrolling: touch;
-	}
+	/*
+	 * Stats panel inside flip card back:
+	 * Styling is applied via the .inFlipCard CSS-module class in StatsPanel.module.css
+	 * (the raw .statsPanel selector doesn't match CSS-module-mangled class names).
+	 */
 }
 
 @media (max-width: 768px) {

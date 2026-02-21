@@ -452,6 +452,8 @@
 /* Show flip hint on mobile - only on front side */
 @media (max-width: 1024px) {
 	.nhlCard {
+		width: 100%;
+		max-width: var(--card-width, 400px);
 		height: auto;
 		min-height: 711px;
 	}
