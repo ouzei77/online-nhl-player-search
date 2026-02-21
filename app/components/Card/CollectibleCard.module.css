@@ -446,7 +446,7 @@
 }
 
 
-/* Show flip hint on mobile */
+/* Show flip hint on mobile - only on front side */
 @media (max-width: 1024px) {
 	.nhlCard {
 		height: auto;
@@ -455,5 +455,11 @@
 
 	.flipHint {
 		display: block;
+	}
+	
+	/* Hide flip hint when card is flipped (backside) */
+	.nhlCard.flipped .flipHint,
+	.flip-card-container.flipped .flipHint {
+		display: none !important;
 	}
 }
