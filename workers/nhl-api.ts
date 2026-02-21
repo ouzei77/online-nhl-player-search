@@ -207,14 +207,24 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 	}
 
 	// Normalize the name to Title Case for the Stats API
-	const toTitleCase = (s: string) =>
-		(s || '')
-			.toLowerCase()
-			.split(/\s+/)
-			.map((part) =>
-				part.length ? part[0].toUpperCase() + part.slice(1) : part
-			)
-			.join(' ');
+	// Handles special cases like "Mc" and "Mac" prefixes
+	const toTitleCase = (s: string) => {
+		if (!s) return '';
+		const lower = s.toLowerCase().trim();
+		
+		// Handle "Mc" prefix (e.g., "mcdavid" -> "McDavid")
+		if (lower.startsWith('mc') && lower.length > 2) {
+			return 'Mc' + lower.charAt(2).toUpperCase() + lower.slice(3);
+		}
+		
+		// Handle "Mac" prefix (e.g., "mackinnon" -> "MacKinnon")
+		if (lower.startsWith('mac') && lower.length > 3) {
+			return 'Mac' + lower.charAt(3).toUpperCase() + lower.slice(4);
+		}
+		
+		// Standard Title Case
+		return lower.charAt(0).toUpperCase() + lower.slice(1);
+	};
 
 	const parts = name.split(/\s+/);
 	let lastNameRaw = parts[parts.length - 1];
