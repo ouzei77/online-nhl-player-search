@@ -415,6 +415,7 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			wins: src.wins ?? src.w ?? 0,
 			shutouts: src.shutouts ?? src.so ?? 0,
 			savePercentage:
+				src.savePctg ??
 				src.savePct ??
 				src.savePercentage ??
 				src.savesPct ??

@@ -31,14 +31,8 @@ interface SkaterStatsTableProps {
 }
 
 const SkaterStatsTable = ({ stats, title }: SkaterStatsTableProps) => {
-	// Always show the table, even with empty stats
-	const displayStats = stats || {
-		games_played: 0,
-		goals: 0,
-		assists: 0,
-		points: 0,
-		plus_minus: 0
-	};
+	// Check if stats exist and have games played
+	const hasStats = stats && (stats.games_played ?? 0) > 0;
 
 	return (
 		<div className={styles.statsSection}>
@@ -55,11 +49,11 @@ const SkaterStatsTable = ({ stats, title }: SkaterStatsTableProps) => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>{displayStats.games_played ?? '-'}</td>
-						<td className={styles.bordered}>{displayStats.goals ?? '-'}</td>
-						<td>{displayStats.assists ?? '-'}</td>
-						<td className={styles.bordered}>{displayStats.points ?? '-'}</td>
-						<td>{displayStats.plus_minus ?? '-'}</td>
+						<td>{hasStats ? (stats.games_played ?? '-') : '-'}</td>
+						<td className={styles.bordered}>{hasStats ? (stats.goals ?? '-') : '-'}</td>
+						<td>{hasStats ? (stats.assists ?? '-') : '-'}</td>
+						<td className={styles.bordered}>{hasStats ? (stats.points ?? '-') : '-'}</td>
+						<td>{hasStats ? (stats.plus_minus ?? '-') : '-'}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -73,14 +67,8 @@ interface GoalieStatsTableProps {
 }
 
 const GoalieStatsTable = ({ stats, title }: GoalieStatsTableProps) => {
-	// Always show the table, even with empty stats
-	const displayStats = stats || {
-		games_played: 0,
-		wins: 0,
-		shutouts: 0,
-		saves_pct: 0,
-		avg_goals_against: 0
-	};
+	// Check if stats exist and have games played
+	const hasStats = stats && (stats.games_played ?? 0) > 0;
 
 	return (
 		<div className={styles.statsSection}>
@@ -97,17 +85,17 @@ const GoalieStatsTable = ({ stats, title }: GoalieStatsTableProps) => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>{displayStats.games_played ?? '-'}</td>
-						<td className={styles.bordered}>{displayStats.wins ?? '-'}</td>
-						<td>{displayStats.shutouts ?? '-'}</td>
+						<td>{hasStats ? (stats.games_played ?? '-') : '-'}</td>
+						<td className={styles.bordered}>{hasStats ? (stats.wins ?? '-') : '-'}</td>
+						<td>{hasStats ? (stats.shutouts ?? '-') : '-'}</td>
 						<td className={styles.bordered}>
-							{displayStats.saves_pct != null && displayStats.saves_pct > 0
-								? `${(displayStats.saves_pct * 100).toFixed(1)}%`
+							{hasStats && stats.saves_pct != null && stats.saves_pct > 0
+								? `${(stats.saves_pct * 100).toFixed(1)}%`
 								: '-'}
 						</td>
 						<td>
-							{displayStats.avg_goals_against != null && displayStats.avg_goals_against > 0
-								? displayStats.avg_goals_against.toFixed(2)
+							{hasStats && stats.avg_goals_against != null && stats.avg_goals_against > 0
+								? stats.avg_goals_against.toFixed(2)
 								: '-'}
 						</td>
 					</tr>
