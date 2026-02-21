@@ -138,7 +138,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 				<thead>
 					<tr>
 						<th>Season</th>
-						<th>Type</th>
+						<th>Game Type</th>
 						{!isGoalie ? (
 							<>
 								<th>GP</th>
