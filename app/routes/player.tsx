@@ -215,6 +215,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 								playerData={displayPlayerData}
 								careerStats={displayCareerStats}
 								isGoalie={displayIsGoalie}
+								isInFlipCard={true}
 							/>
 						</div>
 					</div>

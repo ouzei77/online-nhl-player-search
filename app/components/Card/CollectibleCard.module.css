@@ -427,14 +427,6 @@
 	text-align: right;
 }
 
-.flipHintIcon {
-	font-size: 1.5rem;
-	color: #cba328;
-	margin-bottom: 4px;
-	text-shadow: 2px 2px 0px #000000;
-	filter: drop-shadow(0 0 8px rgba(203, 163, 40, 0.6));
-	display: block;
-}
 
 .flipHintText {
 	font-size: 0.5rem;

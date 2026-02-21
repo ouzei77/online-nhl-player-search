@@ -273,7 +273,7 @@ export default function SearchForm({
 				onClick={handleSearch}
 				disabled={disabled || isSearching}
 			>
-				{isSearching ? 'Searching...' : 'Search'}
+				{isSearching ? '...' : 'Search'}
 			</button>
 			{showDropdown && candidates.length > 0 && (
 				<PlayerDropdown

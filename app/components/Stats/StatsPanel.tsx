@@ -291,12 +291,14 @@ interface StatsPanelProps {
 	playerData: PlayerData | null;
 	careerStats: PlayerData['careerStats'];
 	isGoalie: boolean;
+	isInFlipCard?: boolean;
 }
 
 export default function StatsPanel({
 	playerData,
 	careerStats,
-	isGoalie
+	isGoalie,
+	isInFlipCard = false
 }: StatsPanelProps) {
 	// Show empty stats panel even if no player data
 	const currentSeason = playerData?.currentSeason || { regular: null, playoffs: null };
@@ -323,7 +325,7 @@ export default function StatsPanel({
 		: null;
 
 	return (
-		<div className={styles.statsPanel}>
+		<div className={`${styles.statsPanel} ${isInFlipCard ? styles.inFlipCard : ''}`}>
 			{/* Current Season Regular */}
 			{!isGoalie ? (
 				<SkaterStatsTable

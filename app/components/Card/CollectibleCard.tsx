@@ -153,9 +153,8 @@ export default function CollectibleCard({
 				</div>
 
 				{/* Mobile flip hint */}
-				{onFlip && playerName && playerName !== 'Search for a player' && (
+				{onFlip && !isFlipped && playerName && playerName !== 'Search for a player' && (
 					<div className={styles.flipHint}>
-						<div className={styles.flipHintIcon}>↻</div>
 						<div className={styles.flipHintText}>Tap to view stats</div>
 					</div>
 				)}
