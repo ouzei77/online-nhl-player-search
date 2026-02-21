@@ -31,7 +31,14 @@ interface SkaterStatsTableProps {
 }
 
 const SkaterStatsTable = ({ stats, title }: SkaterStatsTableProps) => {
-	if (!stats) return null;
+	// Always show the table, even with empty stats
+	const displayStats = stats || {
+		games_played: 0,
+		goals: 0,
+		assists: 0,
+		points: 0,
+		plus_minus: 0
+	};
 
 	return (
 		<div className={styles.statsSection}>
@@ -48,11 +55,11 @@ const SkaterStatsTable = ({ stats, title }: SkaterStatsTableProps) => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>{stats.games_played ?? '-'}</td>
-						<td className={styles.bordered}>{stats.goals ?? '-'}</td>
-						<td>{stats.assists ?? '-'}</td>
-						<td className={styles.bordered}>{stats.points ?? '-'}</td>
-						<td>{stats.plus_minus ?? '-'}</td>
+						<td>{displayStats.games_played ?? '-'}</td>
+						<td className={styles.bordered}>{displayStats.goals ?? '-'}</td>
+						<td>{displayStats.assists ?? '-'}</td>
+						<td className={styles.bordered}>{displayStats.points ?? '-'}</td>
+						<td>{displayStats.plus_minus ?? '-'}</td>
 					</tr>
 				</tbody>
 			</table>
@@ -66,7 +73,14 @@ interface GoalieStatsTableProps {
 }
 
 const GoalieStatsTable = ({ stats, title }: GoalieStatsTableProps) => {
-	if (!stats) return null;
+	// Always show the table, even with empty stats
+	const displayStats = stats || {
+		games_played: 0,
+		wins: 0,
+		shutouts: 0,
+		saves_pct: 0,
+		avg_goals_against: 0
+	};
 
 	return (
 		<div className={styles.statsSection}>
@@ -83,17 +97,17 @@ const GoalieStatsTable = ({ stats, title }: GoalieStatsTableProps) => {
 				</thead>
 				<tbody>
 					<tr>
-						<td>{stats.games_played ?? '-'}</td>
-						<td className={styles.bordered}>{stats.wins ?? '-'}</td>
-						<td>{stats.shutouts ?? '-'}</td>
+						<td>{displayStats.games_played ?? '-'}</td>
+						<td className={styles.bordered}>{displayStats.wins ?? '-'}</td>
+						<td>{displayStats.shutouts ?? '-'}</td>
 						<td className={styles.bordered}>
-							{stats.saves_pct != null
-								? `${(stats.saves_pct * 100).toFixed(1)}%`
+							{displayStats.saves_pct != null && displayStats.saves_pct > 0
+								? `${(displayStats.saves_pct * 100).toFixed(1)}%`
 								: '-'}
 						</td>
 						<td>
-							{stats.avg_goals_against != null
-								? stats.avg_goals_against.toFixed(2)
+							{displayStats.avg_goals_against != null && displayStats.avg_goals_against > 0
+								? displayStats.avg_goals_against.toFixed(2)
 								: '-'}
 						</td>
 					</tr>
@@ -217,7 +231,7 @@ interface PlayerData {
 }
 
 interface StatsPanelProps {
-	playerData: PlayerData;
+	playerData: PlayerData | null;
 	careerStats: PlayerData['careerStats'];
 	isGoalie: boolean;
 }
@@ -227,28 +241,27 @@ export default function StatsPanel({
 	careerStats,
 	isGoalie
 }: StatsPanelProps) {
-	if (!playerData || !careerStats) return null;
-
-	const currentSeason = playerData.currentSeason || {};
-	const last5Seasons = playerData.last5Seasons || [];
+	// Show empty stats panel even if no player data
+	const currentSeason = playerData?.currentSeason || {};
+	const last5Seasons = playerData?.last5Seasons || [];
 
 	const skaterCareer = !isGoalie
 		? {
-				games_played: careerStats.totalGamesPlayed,
-				goals: careerStats.totalGoals,
-				assists: careerStats.totalAssists,
-				points: careerStats.totalPoints,
-				plus_minus: careerStats.totalPlusMinus
+				games_played: careerStats.totalGamesPlayed || 0,
+				goals: careerStats.totalGoals || 0,
+				assists: careerStats.totalAssists || 0,
+				points: careerStats.totalPoints || 0,
+				plus_minus: careerStats.totalPlusMinus || 0
 			}
 		: null;
 
 	const goalieCareer = isGoalie
 		? {
-				games_played: careerStats.totalGamesPlayed,
-				wins: careerStats.totalWins,
-				shutouts: careerStats.totalSOs,
-				saves_pct: careerStats.totalSVpct,
-				avg_goals_against: careerStats.totalGAA
+				games_played: careerStats.totalGamesPlayed || 0,
+				wins: careerStats.totalWins || 0,
+				shutouts: careerStats.totalSOs || 0,
+				saves_pct: careerStats.totalSVpct || 0,
+				avg_goals_against: careerStats.totalGAA || 0
 			}
 		: null;
 

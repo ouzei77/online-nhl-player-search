@@ -138,6 +138,55 @@ export default function PlayerCard({}: Route.ComponentProps) {
 
 	const isGoalie = playerData?.primary_position === 'G';
 
+	// Default empty data for blank card and stats
+	const defaultImage = blankImage;
+	const defaultPlayerData: PlayerData = {
+		full_name: '',
+		team: {
+			id: null,
+			name: 'NHL Team',
+			alias: '',
+			logoUrl: null
+		},
+		jersey_number: null,
+		primary_position: '',
+		headshotUrl: defaultImage,
+		currentSeason: {
+			regular: null,
+			playoffs: null
+		},
+		last5Seasons: [],
+		careerStats: {
+			totalGamesPlayed: 0,
+			totalGoals: 0,
+			totalAssists: 0,
+			totalPoints: 0,
+			totalPlusMinus: 0,
+			totalWins: 0,
+			totalSOs: 0,
+			totalSVpct: 0,
+			totalGAA: 0
+		}
+	};
+
+	const defaultCareerStats = {
+		totalGamesPlayed: 0,
+		totalGoals: 0,
+		totalAssists: 0,
+		totalPoints: 0,
+		totalPlusMinus: 0,
+		totalWins: 0,
+		totalSOs: 0,
+		totalSVpct: 0,
+		totalGAA: 0
+	};
+
+	// Use actual data if available, otherwise use defaults
+	const displayPlayerData = playerData || defaultPlayerData;
+	const displayImage = image || defaultImage;
+	const displayCareerStats = careerStats || defaultCareerStats;
+	const displayIsGoalie = isGoalie || false;
+
 	return (
 		<div className="app-container">
 			<LoadingScreen loading={isLoading} />
@@ -146,21 +195,19 @@ export default function PlayerCard({}: Route.ComponentProps) {
 				<SearchForm disabled={isLoading} onSearch={handleSearch} />
 			</div>
 
-			{btnClicked && playerData && image && !isLoading && (
-				<div className="content-wrapper">
-					{/* Left side - Stats */}
-					<StatsPanel
-						playerData={playerData}
-						careerStats={careerStats!}
-						isGoalie={isGoalie}
-					/>
+			<div className="content-wrapper">
+				{/* Left side - Stats */}
+				<StatsPanel
+					playerData={displayPlayerData}
+					careerStats={displayCareerStats}
+					isGoalie={displayIsGoalie}
+				/>
 
-					{/* Right side - Card */}
-					<div className="card-panel">
-						<CollectibleCard playerData={playerData} image={image} />
-					</div>
+				{/* Right side - Card */}
+				<div className="card-panel">
+					<CollectibleCard playerData={displayPlayerData} image={displayImage} />
 				</div>
-			)}
+			</div>
 		</div>
 	);
 }

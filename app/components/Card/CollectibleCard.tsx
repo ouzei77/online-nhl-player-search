@@ -59,13 +59,12 @@ export default function CollectibleCard({
 	playerData,
 	image
 }: CollectibleCardProps) {
-	if (!playerData || !image) return null;
-
-	const teamAbbrev = playerData.team?.alias;
+	const teamAbbrev = playerData?.team?.alias;
 	const teamClassKey = teamAbbrev ? TEAM_CLASS_MAP[teamAbbrev] : null;
 	const teamClassName = teamClassKey ? styles[teamClassKey] : '';
-	const teamName = playerData.team?.name || teamAbbrev || 'NHL Team';
-	const jerseyNumber = playerData.jersey_number;
+	const teamName = playerData?.team?.name || teamAbbrev || 'NHL Team';
+	const jerseyNumber = playerData?.jersey_number;
+	const playerName = playerData?.full_name || '';
 
 	return (
 		<div className={`${styles.nhlCard} ${teamClassName}`}>
@@ -120,7 +119,7 @@ export default function CollectibleCard({
 						<span className={styles.teamNameText}>{teamName}</span>
 					</div>
 					<div className={styles.bannerBottom}>
-						<span className={styles.playerName}>{playerData.full_name}</span>
+						<span className={styles.playerName}>{playerName || 'Search for a player'}</span>
 						{jerseyNumber && (
 							<span className={styles.playerNumber}>#{jerseyNumber}</span>
 						)}

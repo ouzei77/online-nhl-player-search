@@ -12,6 +12,7 @@ import "./app.css";
 import "./Global.css";
 
 export const links: Route.LinksFunction = () => [
+	{ rel: "icon", href: "/NHL.ico", type: "image/x-icon" },
 	{ rel: "preconnect", href: "https://fonts.googleapis.com" },
 	{
 		rel: "preconnect",
@@ -30,6 +31,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 			<head>
 				<meta charSet="utf-8" />
 				<meta name="viewport" content="width=device-width, initial-scale=1" />
+				<link rel="icon" href="/NHL.ico" type="image/x-icon" />
 				<Meta />
 				<Links />
 			</head>
