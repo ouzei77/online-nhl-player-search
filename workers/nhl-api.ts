@@ -603,7 +603,6 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			: null;
 
 		// Headshot mug URL
-		const now = new Date();
 		const currentYearForMug = now.getFullYear();
 		const currentMonthForMug = now.getMonth();
 		const mugSeasonStartYear =
