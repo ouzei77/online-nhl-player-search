@@ -373,6 +373,68 @@ function resolveLocalizedString(value: any): string {
 }
 
 /**
+ * NHL Team Name to Abbreviation Mapping
+ */
+const nhlTeamAbbreviations: Record<string, string> = {
+	"Anaheim Ducks": "ANA",
+	"Boston Bruins": "BOS",
+	"Buffalo Sabres": "BUF",
+	"Calgary Flames": "CGY",
+	"Carolina Hurricanes": "CAR",
+	"Chicago Blackhawks": "CHI",
+	"Colorado Avalanche": "COL",
+	"Columbus Blue Jackets": "CBJ",
+	"Dallas Stars": "DAL",
+	"Detroit Red Wings": "DET",
+	"Edmonton Oilers": "EDM",
+	"Florida Panthers": "FLA",
+	"Los Angeles Kings": "LAK",
+	"Minnesota Wild": "MIN",
+	"Montreal Canadiens": "MTL",
+	"Montréal Canadiens": "MTL", // Catching potential accents
+	"Nashville Predators": "NSH",
+	"New Jersey Devils": "NJD",
+	"New York Islanders": "NYI",
+	"New York Rangers": "NYR",
+	"Ottawa Senators": "OTT",
+	"Philadelphia Flyers": "PHI",
+	"Pittsburgh Penguins": "PIT",
+	"San Jose Sharks": "SJS",
+	"Seattle Kraken": "SEA",
+	"St. Louis Blues": "STL",
+	"St Louis Blues": "STL", // Catching missing periods
+	"Tampa Bay Lightning": "TBL",
+	"Toronto Maple Leafs": "TOR",
+	"Utah Mammoth": "UTA", // Updated from Utah Hockey Club
+	"Vancouver Canucks": "VAN",
+	"Vegas Golden Knights": "VGK",
+	"Washington Capitals": "WSH",
+	"Winnipeg Jets": "WPG"
+};
+
+/**
+ * Inject team abbreviations into seasonTotals entries
+ */
+function injectTeamAbbrev(seasonTotals: any[]): any[] {
+	if (!Array.isArray(seasonTotals)) {
+		return seasonTotals;
+	}
+
+	return seasonTotals.map((season: any) => {
+		// Only attempt to map if it's an NHL season and we have a team name
+		if (season.leagueAbbrev === "NHL" && season.teamName) {
+			const fullName = resolveLocalizedString(season.teamName);
+			
+			// Inject the abbreviation, fallback to null if not found in dict
+			if (fullName && nhlTeamAbbreviations[fullName]) {
+				season.teamAbbrev = nhlTeamAbbreviations[fullName];
+			}
+		}
+		return season;
+	});
+}
+
+/**
  * Fetch player data from NHL API
  */
 async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
@@ -415,12 +477,15 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 		// Stats parsing based on official landing structure
 		const featuredStats = landingData.featuredStats || {};
 		const careerTotals = landingData.careerTotals || featuredStats.careerTotals || {};
-		const seasonTotalsArray =
+		let seasonTotalsArray =
 			Array.isArray(landingData.seasonTotals) && landingData.seasonTotals.length
 				? landingData.seasonTotals
 				: Array.isArray(featuredStats.seasonTotals)
 				? featuredStats.seasonTotals
 				: [];
+		
+		// Inject team abbreviations into seasonTotals entries
+		seasonTotalsArray = injectTeamAbbrev(seasonTotalsArray);
 
 		const normalizeSkaterTotals = (src: any = {}) => ({
 			games: src.gamesPlayed ?? src.games ?? src.gp ?? 0,
