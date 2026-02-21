@@ -234,8 +234,8 @@ img {
 	.flip-back-button-wrapper {
 		display: block;
 		position: absolute;
-		top: 12px;
-		right: 12px;
+		top: 10px;
+		right: 10px;
 		left: auto;
 		z-index: 100;
 		pointer-events: none;
@@ -256,7 +256,7 @@ img {
 		max-height: 711px;
 		overflow-y: auto;
 		overflow-x: hidden;
-		padding: 70px 12px 12px 12px;
+		padding: 100px 10px 10px 10px;
 		border: none !important;
 		box-shadow: none !important;
 		background: transparent;
