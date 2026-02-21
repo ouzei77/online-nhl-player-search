@@ -201,7 +201,56 @@ td.seasonType {
 	background: transparent;
 }
 
-/* Responsive Design */
+/* Intermediate screens — laptop / modal context */
+@media (max-width: 1280px) {
+    .statsPanel {
+        padding: 18px;
+    }
+
+    .statsTitle {
+        font-size: 0.65rem;
+        margin-bottom: 12px;
+        padding-bottom: 8px;
+    }
+
+    .statsTable th {
+        padding: 10px 8px;
+        font-size: 0.6rem;
+    }
+
+    .statsTable td {
+        padding: 10px 8px;
+    }
+
+    .statsTable {
+        font-size: 0.6rem;
+    }
+
+    td.seasonLabel {
+        padding-right: 12px;
+    }
+
+    td.seasonType {
+        font-size: 0.55rem;
+        padding-left: 16px;
+    }
+
+    .teamLabel {
+        font-size: 0.5rem;
+    }
+
+    .seasonHistoryTable th {
+        padding: 8px 6px;
+        font-size: 0.55rem;
+    }
+
+    .seasonHistoryTable td {
+        padding: 8px 6px;
+        font-size: 0.55rem;
+    }
+}
+
+/* Mobile — single column with flip card */
 @media (max-width: 1024px) {
     .statsPanel {
         height: auto;
@@ -213,7 +262,7 @@ td.seasonType {
     /* Override .statsPanel defaults when inside the flip-card back */
     .inFlipCard {
         height: 100%;
-        max-height: 711px;
+        max-height: 100%;
         overflow-y: auto;
         overflow-x: hidden;
         padding: 30px 10px 10px 10px;

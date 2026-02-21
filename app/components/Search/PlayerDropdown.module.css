@@ -99,3 +99,36 @@
 	letter-spacing: 0.02em;
 	text-shadow: 1px 1px 0px #000000;
 }
+
+/* Mobile: larger touch targets */
+@media (max-width: 1024px) {
+	.dropdown {
+		margin-top: 4px;
+	}
+
+	.dropdownItem {
+		padding: 12px 14px;
+	}
+
+	.playerName {
+		font-size: 10px;
+	}
+
+	.teamName {
+		font-size: 8px;
+	}
+}
+
+@media (max-width: 480px) {
+	.dropdownItem {
+		padding: 10px 12px;
+	}
+
+	.playerName {
+		font-size: 9px;
+	}
+
+	.teamName {
+		font-size: 7px;
+	}
+}

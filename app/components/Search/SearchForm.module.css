@@ -103,6 +103,23 @@
 	transform: none;
 }
 
+/* Intermediate screens — laptop / modal context */
+@media (max-width: 1280px) {
+	.searchDiv {
+		max-width: 550px;
+	}
+
+	.playerInput {
+		padding: 14px 20px;
+		font-size: 11px;
+	}
+
+	.searchButton {
+		padding: 14px 24px;
+		font-size: 11px;
+	}
+}
+
 /* Mobile responsive styles */
 @media (max-width: 1024px) {
 	.searchDiv {

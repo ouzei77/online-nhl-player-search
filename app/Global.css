@@ -32,10 +32,10 @@ img {
 .app-container {
 	max-width: 1400px;
 	margin: 0 auto;
-	padding: 24px;
+	padding: 20px 24px;
 	position: relative;
 	background: #08126b;
-	height: 100vh;
+	height: 100%;
 	display: flex;
 	flex-direction: column;
 	box-sizing: border-box;
@@ -43,7 +43,7 @@ img {
 }
 
 .search-section {
-	margin-bottom: 24px;
+	margin-bottom: 20px;
 	display: flex;
 	justify-content: center;
 	flex-shrink: 0;
@@ -51,8 +51,8 @@ img {
 
 .content-wrapper {
 	display: grid;
-	grid-template-columns: 1fr 450px;
-	gap: 24px;
+	grid-template-columns: 1fr minmax(300px, 420px);
+	gap: 20px;
 	align-items: stretch;
 	flex: 1;
 	overflow: hidden;
@@ -129,24 +129,36 @@ img {
 }
 
 /* Responsive Design */
-@media (max-width: 1200px) {
+@media (max-width: 1280px) {
+	.app-container {
+		padding: 16px 20px;
+	}
+
+	.search-section {
+		margin-bottom: 16px;
+	}
+
 	.content-wrapper {
-		grid-template-columns: 1fr 400px;
-		gap: 28px;
+		grid-template-columns: 1fr minmax(280px, 380px);
+		gap: 16px;
 	}
 }
 
 @media (max-width: 1024px) {
 	.app-container {
-		padding: 20px 0;
+		padding: 16px 0;
 		height: auto;
-		min-height: 100vh;
+		min-height: 100%;
 		overflow-y: auto;
+	}
+
+	.search-section {
+		margin-bottom: 16px;
 	}
 
 	.content-wrapper {
 		grid-template-columns: 1fr;
-		gap: 24px;
+		gap: 20px;
 		align-items: start;
 		min-height: auto;
 	}
@@ -172,7 +184,7 @@ img {
 		max-width: 400px;
 		margin: 0 auto;
 		height: auto;
-		min-height: 711px;
+		aspect-ratio: 9 / 16;
 		position: relative;
 		perspective: 1000px;
 		/* Extra space so the card's box-shadow isn't clipped */
@@ -182,9 +194,7 @@ img {
 	.flip-card-front {
 		position: absolute;
 		width: 100%;
-		min-height: 711px;
-		height: 711px;
-		max-height: 711px;
+		height: 100%;
 		backface-visibility: hidden;
 		transition: transform 0.6s;
 		transform-style: preserve-3d;
@@ -196,9 +206,7 @@ img {
 		top: 0;
 		left: 0;
 		width: 100%;
-		min-height: 711px;
-		height: 711px;
-		max-height: 711px;
+		height: 100%;
 		overflow: hidden;
 		box-sizing: border-box;
 		backface-visibility: hidden;
@@ -261,11 +269,34 @@ img {
 
 @media (max-width: 768px) {
 	.app-container {
-		padding: 20px 16px;
+		padding: 16px 12px;
 	}
 
 	.search-section {
-		margin-bottom: 32px;
+		margin-bottom: 12px;
+	}
+
+	.flip-card-container {
+		max-width: 360px;
+	}
+}
+
+@media (max-width: 480px) {
+	.app-container {
+		padding: 12px 8px;
+	}
+
+	.search-section {
+		margin-bottom: 10px;
+	}
+
+	.flip-card-container {
+		max-width: 100%;
+	}
+
+	.flip-back-button {
+		padding: 6px 12px;
+		font-size: 0.45rem;
 	}
 }
 

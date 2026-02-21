@@ -3,10 +3,10 @@
 	--_secondary: var(--team-secondary, #041e42);
 	--_accent: var(--team-accent, #ffffff);
 
-	width: var(--card-width, 400px);
+	width: 100%;
+	max-width: var(--card-width, 400px);
 	height: 100%;
 	max-height: 100%;
-	min-height: 711px;
 	position: relative;
 	overflow: hidden;
 	border: 6px solid #cba328;
@@ -454,8 +454,7 @@
 	.nhlCard {
 		width: 100%;
 		max-width: var(--card-width, 400px);
-		height: auto;
-		min-height: 711px;
+		height: 100%;
 	}
 
 	.flipHint {
@@ -468,5 +467,43 @@
 		visibility: hidden !important;
 		opacity: 0 !important;
 		pointer-events: none !important;
+	}
+}
+
+/* Smaller banner text on very small screens */
+@media (max-width: 380px) {
+	.bannerTop {
+		width: 90%;
+		padding: 8px 12px;
+	}
+
+	.bannerBottom {
+		width: 80%;
+		padding: 8px 12px;
+		gap: 8px;
+	}
+
+	.playerName {
+		font-size: 0.55rem;
+	}
+
+	.playerNumber {
+		font-size: 0.5rem;
+	}
+
+	.teamNameText {
+		font-size: 10px;
+	}
+
+	.teamLogoTopLeft {
+		width: 48px;
+		height: 48px;
+		top: 12px;
+		left: 12px;
+		padding: 6px;
+	}
+
+	.bottomBannerContainer {
+		bottom: 14px;
 	}
 }
