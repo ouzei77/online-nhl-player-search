@@ -166,90 +166,94 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 						
 						if (rowSpan === 0) return null;
 						
+						// Render regular season row
+						const regularRow = hasRegular ? (
+							<tr key={`regular-${idx}`} className={styles.regularRow}>
+								<td className={styles.seasonLabel} rowSpan={rowSpan}>
+									{formatSeason(season.season)}
+								</td>
+								<td className={styles.seasonType}>Regular Season</td>
+								{!isGoalie ? (
+									<>
+										<td>{(season.regular as SkaterStats)?.games_played ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.regular as SkaterStats)?.goals ?? '-'}
+										</td>
+										<td>{(season.regular as SkaterStats)?.assists ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.regular as SkaterStats)?.points ?? '-'}
+										</td>
+										<td>{(season.regular as SkaterStats)?.plus_minus ?? '-'}</td>
+									</>
+								) : (
+									<>
+										<td>{(season.regular as GoalieStats)?.games_played ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.regular as GoalieStats)?.wins ?? '-'}
+										</td>
+										<td>{(season.regular as GoalieStats)?.shutouts ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.regular as GoalieStats)?.saves_pct != null && (season.regular as GoalieStats).saves_pct! > 0
+												? `${((season.regular as GoalieStats).saves_pct! * 100).toFixed(1)}%`
+												: '-'}
+										</td>
+										<td>
+											{(season.regular as GoalieStats)?.avg_goals_against != null && (season.regular as GoalieStats).avg_goals_against! > 0
+												? (season.regular as GoalieStats).avg_goals_against!.toFixed(2)
+												: '-'}
+										</td>
+									</>
+								)}
+							</tr>
+						) : null;
+
+						// Render playoffs row
+						const playoffsRow = hasPlayoffs ? (
+							<tr key={`playoffs-${idx}`} className={styles.playoffsRow}>
+								{!hasRegular && (
+									<td className={styles.seasonLabel} rowSpan={1}>
+										{formatSeason(season.season)}
+									</td>
+								)}
+								<td className={styles.seasonType}>Playoffs</td>
+								{!isGoalie ? (
+									<>
+										<td>{(season.playoffs as SkaterStats)?.games_played ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.playoffs as SkaterStats)?.goals ?? '-'}
+										</td>
+										<td>{(season.playoffs as SkaterStats)?.assists ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.playoffs as SkaterStats)?.points ?? '-'}
+										</td>
+										<td>{(season.playoffs as SkaterStats)?.plus_minus ?? '-'}</td>
+									</>
+								) : (
+									<>
+										<td>{(season.playoffs as GoalieStats)?.games_played ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.playoffs as GoalieStats)?.wins ?? '-'}
+										</td>
+										<td>{(season.playoffs as GoalieStats)?.shutouts ?? '-'}</td>
+										<td className={styles.bordered}>
+											{(season.playoffs as GoalieStats)?.saves_pct != null && (season.playoffs as GoalieStats).saves_pct! > 0
+												? `${((season.playoffs as GoalieStats).saves_pct! * 100).toFixed(1)}%`
+												: '-'}
+										</td>
+										<td>
+											{(season.playoffs as GoalieStats)?.avg_goals_against != null && (season.playoffs as GoalieStats).avg_goals_against! > 0
+												? (season.playoffs as GoalieStats).avg_goals_against!.toFixed(2)
+												: '-'}
+										</td>
+									</>
+								)}
+							</tr>
+						) : null;
+
 						return (
 							<React.Fragment key={idx}>
-								{/* Regular Season Row */}
-								{hasRegular && (
-									<tr className={styles.regularRow}>
-										<td className={styles.seasonLabel} rowSpan={rowSpan}>
-											{formatSeason(season.season)}
-										</td>
-										<td className={styles.seasonType}>Regular Season</td>
-										{!isGoalie ? (
-											<>
-												<td>{(season.regular as SkaterStats)?.games_played ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.regular as SkaterStats)?.goals ?? '-'}
-												</td>
-												<td>{(season.regular as SkaterStats)?.assists ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.regular as SkaterStats)?.points ?? '-'}
-												</td>
-												<td>{(season.regular as SkaterStats)?.plus_minus ?? '-'}</td>
-											</>
-										) : (
-											<>
-												<td>{(season.regular as GoalieStats)?.games_played ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.regular as GoalieStats)?.wins ?? '-'}
-												</td>
-												<td>{(season.regular as GoalieStats)?.shutouts ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.regular as GoalieStats)?.saves_pct != null && (season.regular as GoalieStats).saves_pct! > 0
-														? `${((season.regular as GoalieStats).saves_pct! * 100).toFixed(1)}%`
-														: '-'}
-												</td>
-												<td>
-													{(season.regular as GoalieStats)?.avg_goals_against != null && (season.regular as GoalieStats).avg_goals_against! > 0
-														? (season.regular as GoalieStats).avg_goals_against!.toFixed(2)
-														: '-'}
-												</td>
-											</>
-										)}
-									</tr>
-								)}
-								{/* Playoffs Row if available */}
-								{hasPlayoffs && (
-									<tr className={styles.playoffsRow}>
-										{!hasRegular && (
-											<td className={styles.seasonLabel} rowSpan={1}>
-												{formatSeason(season.season)}
-											</td>
-										)}
-										<td className={styles.seasonType}>Playoffs</td>
-										{!isGoalie ? (
-											<>
-												<td>{(season.playoffs as SkaterStats)?.games_played ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.playoffs as SkaterStats)?.goals ?? '-'}
-												</td>
-												<td>{(season.playoffs as SkaterStats)?.assists ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.playoffs as SkaterStats)?.points ?? '-'}
-												</td>
-												<td>{(season.playoffs as SkaterStats)?.plus_minus ?? '-'}</td>
-											</>
-										) : (
-											<>
-												<td>{(season.playoffs as GoalieStats)?.games_played ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.playoffs as GoalieStats)?.wins ?? '-'}
-												</td>
-												<td>{(season.playoffs as GoalieStats)?.shutouts ?? '-'}</td>
-												<td className={styles.bordered}>
-													{(season.playoffs as GoalieStats)?.saves_pct != null && (season.playoffs as GoalieStats).saves_pct! > 0
-														? `${((season.playoffs as GoalieStats).saves_pct! * 100).toFixed(1)}%`
-														: '-'}
-												</td>
-												<td>
-													{(season.playoffs as GoalieStats)?.avg_goals_against != null && (season.playoffs as GoalieStats).avg_goals_against! > 0
-														? (season.playoffs as GoalieStats).avg_goals_against!.toFixed(2)
-														: '-'}
-												</td>
-											</>
-										)}
-									</tr>
-								)}
+								{regularRow}
+								{playoffsRow}
 							</React.Fragment>
 						);
 					})}
