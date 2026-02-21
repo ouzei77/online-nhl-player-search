@@ -425,6 +425,9 @@
 	display: none; /* Hidden by default, shown on mobile */
 	pointer-events: none;
 	text-align: right;
+	/* Hides the element when the card rotates 180 degrees during 3D flip animation */
+	backface-visibility: hidden;
+	-webkit-backface-visibility: hidden;
 }
 
 
