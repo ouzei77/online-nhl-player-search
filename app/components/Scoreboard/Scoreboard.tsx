@@ -1,5 +1,4 @@
 import React from 'react';
-import '../Global.css';
 
 interface ScoreboardProps {
 	playerName?: string;
