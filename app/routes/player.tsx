@@ -201,25 +201,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 							/>
 						</div>
 						{/* Back of card - Stats (mobile only) */}
-						<div 
-							className="flip-card-back"
-							onClick={(e) => {
-								// Flip back when clicking on the back container or empty areas
-								// Allow stats panel content and buttons to handle their own clicks
-								const target = e.target as HTMLElement;
-								// Check if click is on stats panel or any of its children
-								const isStatsPanel = target.closest('[class*="statsPanel"]') || 
-													target.closest('[class*="StatsPanel"]') ||
-													target.closest('table') ||
-													target.closest('.statsPanel');
-								const isButton = target.closest('button') || target.tagName === 'BUTTON';
-								
-								// Only flip if not clicking on interactive content (stats panel or buttons)
-								if (!isStatsPanel && !isButton) {
-									setIsFlipped(false);
-								}
-							}}
-						>
+						<div className="flip-card-back">
 							<div className="flip-back-button-wrapper">
 								<button 
 									className="flip-back-button"
