@@ -446,35 +446,61 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				: null;
 
 		// Last 5 NHL seasons - include both regular season and playoffs
-		const regularSeasons = seasonTotalsArray
-			.filter((s: any) => s.leagueAbbrev === 'NHL')
-			.sort((a: any, b: any) => {
-				const sa = parseInt(String(a.season || '0'), 10);
-				const sb = parseInt(String(b.season || '0'), 10);
+		// seasonTotals is an array where each entry has gameTypeId (2 = regular, 3 = playoffs)
+		const nhlSeasons = seasonTotalsArray.filter((s: any) => s.leagueAbbrev === 'NHL');
+		
+		// Group by season and gameTypeId
+		const seasonMap = new Map<string, { regular: any; playoffs: any }>();
+		
+		for (const entry of nhlSeasons) {
+			const seasonId = String(entry.season || '');
+			const gameTypeId = entry.gameTypeId;
+			
+			if (!seasonMap.has(seasonId)) {
+				seasonMap.set(seasonId, { regular: null, playoffs: null });
+			}
+			
+			const seasonData = seasonMap.get(seasonId)!;
+			
+			if (gameTypeId === 2) {
+				// Regular season
+				seasonData.regular = entry;
+			} else if (gameTypeId === 3) {
+				// Playoffs
+				seasonData.playoffs = entry;
+			}
+		}
+		
+		// Get unique seasons, sort by season (newest first), and take top 5
+		const uniqueSeasons = Array.from(seasonMap.keys())
+			.sort((a, b) => {
+				const sa = parseInt(a || '0', 10);
+				const sb = parseInt(b || '0', 10);
 				return sb - sa;
 			})
-			.slice(0, 5)
-			.map((s: any) => {
-				const seasonId = String(s.season || '');
-				const regularBase = s.regularSeason || s;
-				const playoffsBase = s.playoffs || null;
-				
-				const regularStats = !isGoalie
-					? normalizeSkaterTotals(regularBase)
-					: normalizeGoalieTotals(regularBase);
-				
-				const playoffsStats = playoffsBase
-					? (!isGoalie
-						? normalizeSkaterTotals(playoffsBase)
-						: normalizeGoalieTotals(playoffsBase))
-					: null;
-				
-				return {
-					season: seasonId,
-					regular: regularStats,
-					playoffs: playoffsStats
-				};
-			});
+			.slice(0, 5);
+		
+		const regularSeasons = uniqueSeasons.map((seasonId) => {
+			const seasonData = seasonMap.get(seasonId)!;
+			
+			const regularStats = seasonData.regular
+				? (!isGoalie
+					? normalizeSkaterTotals(seasonData.regular)
+					: normalizeGoalieTotals(seasonData.regular))
+				: null;
+			
+			const playoffsStats = seasonData.playoffs
+				? (!isGoalie
+					? normalizeSkaterTotals(seasonData.playoffs)
+					: normalizeGoalieTotals(seasonData.playoffs))
+				: null;
+			
+			return {
+				season: seasonId,
+				regular: regularStats,
+				playoffs: playoffsStats
+			};
+		});
 
 		// Career totals
 		const careerBase =
