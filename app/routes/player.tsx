@@ -1,5 +1,7 @@
 import type { Route } from './+types/player';
-import React, { useState } from 'react';
+import type { PlayerData } from '~/types/player';
+import { DEFAULT_SKATER_MUG } from '~/types/player';
+import { useState } from 'react';
 import '../Global.css';
 import LoadingScreen from '../components/LoadingScreen/LoadingScreen';
 import SearchForm from '../components/Search/SearchForm';
@@ -13,35 +15,6 @@ export function meta({}: Route.MetaArgs) {
 	];
 }
 
-interface PlayerData {
-	full_name: string;
-	team?: {
-		id: number | null;
-		name: string;
-		alias: string;
-		logoUrl: string | null;
-	};
-	jersey_number: number | null;
-	primary_position: string;
-	headshotUrl: string;
-	currentSeason: {
-		regular: any;
-		playoffs: any;
-	};
-	last5Seasons: any[];
-	careerStats: {
-		totalGamesPlayed: number;
-		totalGoals: number;
-		totalAssists: number;
-		totalPoints: number;
-		totalPlusMinus: number;
-		totalWins: number;
-		totalSOs: number;
-		totalSVpct: number;
-		totalGAA: number;
-	};
-}
-
 export default function PlayerCard({}: Route.ComponentProps) {
 	// Since API is on the same domain, we can use relative URLs
 	const baseUrl = '';
@@ -53,7 +26,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 	const [isLoading, setIsLoading] = useState(false);
 	const [isFlipped, setIsFlipped] = useState(false);
 
-	const blankImage = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
+	const blankImage = DEFAULT_SKATER_MUG;
 
 	const handlePlayerSelect = async (playerId: number) => {
 		// Set loading state and clear previous data

@@ -1,4 +1,6 @@
-import React from 'react';
+import { memo, useCallback } from 'react';
+import type { PlayerBase } from '~/types/player';
+import { DEFAULT_SKATER_MUG } from '~/types/player';
 import styles from './CollectibleCard.module.css';
 
 // Map NHL triCodes to CSS team theme classes used by the collectible card template
@@ -37,27 +39,39 @@ const TEAM_CLASS_MAP: Record<string, string> = {
 	WPG: 'winnipeg-jets'
 };
 
-interface PlayerData {
-	full_name: string;
-	team?: {
-		id: number | null;
-		name: string;
-		alias: string;
-		logoUrl: string | null;
-	};
-	jersey_number: number | null;
-	primary_position: string;
-	headshotUrl: string;
-}
-
 interface CollectibleCardProps {
-	playerData: PlayerData;
+	playerData: PlayerBase;
 	image: string;
 	onFlip?: () => void;
 	isFlipped?: boolean;
 }
 
-export default function CollectibleCard({
+/**
+ * Module-level handler: hide broken logo images.
+ * Defined once — avoids allocating a new closure per render.
+ */
+const handleLogoError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+	e.currentTarget.style.display = 'none';
+};
+
+/**
+ * Module-level handler: fallback for broken player headshot.
+ * Uses a `data-default-tried` flag to prevent an infinite error loop
+ * when the fallback itself is unavailable.
+ */
+const handlePlayerImgError = (e: React.SyntheticEvent<HTMLImageElement>) => {
+	if (!e.currentTarget.dataset.defaultTried) {
+		e.currentTarget.dataset.defaultTried = '1';
+		e.currentTarget.src = DEFAULT_SKATER_MUG;
+	}
+};
+
+/** Helper: join class names, filtering out empty strings */
+function cx(...classes: (string | false | undefined | null)[]): string {
+	return classes.filter(Boolean).join(' ');
+}
+
+export default memo(function CollectibleCard({
 	playerData,
 	image,
 	onFlip,
@@ -70,44 +84,47 @@ export default function CollectibleCard({
 	const jerseyNumber = playerData?.jersey_number;
 	const playerName = playerData?.full_name || '';
 
+	const handleKeyDown = useCallback(
+		(e: React.KeyboardEvent) => {
+			if (onFlip && (e.key === 'Enter' || e.key === ' ')) {
+				e.preventDefault();
+				onFlip();
+			}
+		},
+		[onFlip]
+	);
+
 	return (
-		<div 
-			className={`${styles.nhlCard} ${teamClassName} ${onFlip ? styles.clickable : ''} ${isFlipped ? styles.flipped : ''}`}
+		<div
+			className={cx(
+				styles.nhlCard,
+				teamClassName,
+				onFlip && styles.clickable,
+				isFlipped && styles.flipped
+			)}
 			onClick={onFlip}
 			role={onFlip ? 'button' : undefined}
 			tabIndex={onFlip ? 0 : undefined}
-			onKeyDown={onFlip ? (e) => {
-				if (e.key === 'Enter' || e.key === ' ') {
-					e.preventDefault();
-					onFlip();
-				}
-			} : undefined}
+			onKeyDown={onFlip ? handleKeyDown : undefined}
 		>
 			{/* LAYER 1: Player Background Image */}
 			<div className={styles.playerLayer}>
 				{image && (
 					<img
 						src={image}
-						alt="player-background"
+						alt={playerName ? `${playerName} headshot` : 'Player headshot'}
 						className={styles.playerBgImg}
-						onError={(e) => {
-							const defaultMug =
-								'https://assets.nhle.com/mugs/nhl/default-skater.png';
-							if (!(e.currentTarget as HTMLImageElement).dataset.defaultTried) {
-								(e.currentTarget as HTMLImageElement).dataset.defaultTried = '1';
-								e.currentTarget.src = defaultMug;
-							}
-						}}
+						onError={handlePlayerImgError}
 					/>
 				)}
 			</div>
 
 			{/* LAYER 2: The "V" Shape Overlays (placed behind player via z-index) */}
-			<div className={`${styles.vPanel} ${styles.panelLeft}`}>
+			<div className={cx(styles.vPanel, styles.panelLeft)}>
 				<div className={styles.panelTexture}></div>
 			</div>
 
-			<div className={`${styles.vPanel} ${styles.panelRight}`}>
+			<div className={cx(styles.vPanel, styles.panelRight)}>
 				<div className={styles.iceTexture}></div>
 			</div>
 
@@ -115,28 +132,12 @@ export default function CollectibleCard({
 			<div className={styles.nhlCardContent}>
 				{/* Team logo top left */}
 				<div className={styles.teamLogoTopLeft}>
-					{playerData?.team?.logoUrl ? (
-						<img
-							src={playerData.team.logoUrl}
-							alt={teamName}
-							className={styles.teamLogo}
-							onError={(e) => {
-								// Hide broken logo rather than showing broken image icon
-								e.currentTarget.style.display = 'none';
-							}}
-						/>
-					) : (
-						// Show NHL.ico when no player is displayed
-						<img
-							src="/NHL.ico"
-							alt="NHL"
-							className={styles.teamLogo}
-							onError={(e) => {
-								// Hide broken logo rather than showing broken image icon
-								e.currentTarget.style.display = 'none';
-							}}
-						/>
-					)}
+					<img
+						src={playerData?.team?.logoUrl || '/NHL.ico'}
+						alt={playerData?.team?.logoUrl ? teamName : 'NHL'}
+						className={styles.teamLogo}
+						onError={handleLogoError}
+					/>
 				</div>
 
 				{/* Bottom banners */}
@@ -146,7 +147,7 @@ export default function CollectibleCard({
 					</div>
 					<div className={styles.bannerBottom}>
 						<span className={styles.playerName}>{playerName || 'Search for a player'}</span>
-						{jerseyNumber && (
+						{jerseyNumber != null && (
 							<span className={styles.playerNumber}>#{jerseyNumber}</span>
 						)}
 					</div>
@@ -161,4 +162,4 @@ export default function CollectibleCard({
 			</div>
 		</div>
 	);
-}
+});
