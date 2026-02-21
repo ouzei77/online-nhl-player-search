@@ -22,6 +22,7 @@ interface PlayerCandidate {
 	playerId: number;
 	fullName: string;
 	teamId: number | null;
+	teamName: string | null;
 }
 
 interface SearchFormProps {
@@ -42,13 +43,15 @@ export default function SearchForm({
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [isSearching, setIsSearching] = useState(false);
 	const searchDivRef = useRef<HTMLDivElement>(null);
+	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-	const handleSearch = async () => {
-		const trimmed = value.trim();
-		const { error } = nameSchema.validate(trimmed);
-
-		if (error) {
-			alert(error.details[0].message);
+	const performSearch = async (searchTerm: string) => {
+		const trimmed = searchTerm.trim();
+		
+		// Basic validation - at least 2 characters
+		if (trimmed.length < 2) {
+			setCandidates([]);
+			setShowDropdown(false);
 			return;
 		}
 
@@ -60,9 +63,6 @@ export default function SearchForm({
 
 			if (!searchResponse.ok) {
 				if (searchResponse.status === 404) {
-					alert(
-						'Player not found, make sure you have the correct name and format (e.g. "John Doe").'
-					);
 					setCandidates([]);
 					setShowDropdown(false);
 					return;
@@ -76,7 +76,6 @@ export default function SearchForm({
 			const foundCandidates = searchData.candidates || [];
 
 			if (foundCandidates.length === 0) {
-				alert('No players found.');
 				setCandidates([]);
 				setShowDropdown(false);
 			} else if (foundCandidates.length === 1) {
@@ -84,18 +83,49 @@ export default function SearchForm({
 				onPlayerSelect(foundCandidates[0].playerId);
 				setCandidates([]);
 				setShowDropdown(false);
+				setValue('');
 			} else {
 				// Show dropdown with multiple candidates
 				setCandidates(foundCandidates);
 				setShowDropdown(true);
 			}
 		} catch (err) {
-			alert('An unexpected error occurred while searching. Please try again later.');
 			setCandidates([]);
 			setShowDropdown(false);
 		} finally {
 			setIsSearching(false);
 		}
+	};
+
+	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const newValue = e.target.value;
+		setValue(newValue);
+
+		// Clear previous debounce timer
+		if (debounceTimerRef.current) {
+			clearTimeout(debounceTimerRef.current);
+		}
+
+		// Debounce search - wait 300ms after user stops typing
+		debounceTimerRef.current = setTimeout(() => {
+			performSearch(newValue);
+		}, 300);
+	};
+
+	const handleSearch = () => {
+		// Clear debounce timer and search immediately
+		if (debounceTimerRef.current) {
+			clearTimeout(debounceTimerRef.current);
+		}
+		const trimmed = value.trim();
+		const { error } = nameSchema.validate(trimmed);
+
+		if (error) {
+			alert(error.details[0].message);
+			return;
+		}
+
+		performSearch(trimmed);
 	};
 
 	const handlePlayerSelect = (playerId: number) => {
@@ -114,8 +144,20 @@ export default function SearchForm({
 		if (e.key === 'Enter') {
 			e.preventDefault();
 			handleSearch();
+		} else if (e.key === 'Escape') {
+			setShowDropdown(false);
+			setCandidates([]);
 		}
 	};
+
+	// Cleanup debounce timer on unmount
+	useEffect(() => {
+		return () => {
+			if (debounceTimerRef.current) {
+				clearTimeout(debounceTimerRef.current);
+			}
+		};
+	}, []);
 
 	// Close dropdown when clicking outside
 	useEffect(() => {
@@ -143,18 +185,18 @@ export default function SearchForm({
 				type="text"
 				placeholder="Player name"
 				value={value}
-				onChange={(e) => setValue(e.target.value)}
+				onChange={handleInputChange}
 				onKeyDown={handleKeyDown}
 				className={styles.playerInput}
-				disabled={disabled || isSearching}
+				disabled={disabled}
 			/>
 			<button
 				type="button"
 				className={styles.searchButton}
 				onClick={handleSearch}
-				disabled={disabled || isSearching}
+				disabled={disabled}
 			>
-				{isSearching ? 'Searching...' : 'Search'}
+				Search
 			</button>
 			{showDropdown && candidates.length > 0 && (
 				<PlayerDropdown

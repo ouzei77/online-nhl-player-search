@@ -180,6 +180,22 @@ async function lookupTeamByTricode(tricode: string): Promise<any> {
 }
 
 /**
+ * Lookup team by teamId
+ */
+async function lookupTeamById(teamId: number): Promise<any> {
+	if (!teamId) return null;
+	const meta = await fetchTeamMetaFromStats();
+	const team = meta.teams.find((t: any) => t.id === teamId);
+	if (!team) return null;
+	
+	return {
+		id: team.id,
+		fullName: team.fullName,
+		triCode: team.triCode
+	};
+}
+
+/**
  * Enrich team data with metadata
  */
 async function enrichTeamData(teamData: any): Promise<any> {
@@ -271,20 +287,31 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 
 	const inputNorm = normalize(name);
 
-	const candidates = rows
-		.map((row: any) => {
-			const playerId = row.playerId ?? row.id;
-			const fullName = row.fullName || row.skaterFullName || row.goalieFullName;
-			const teamId = row.teamId ?? row.currentTeamId ?? null;
-			return playerId && fullName
-				? {
-						playerId,
-						fullName,
-						teamId
-					}
-				: null;
-		})
-		.filter(Boolean);
+	const candidates = await Promise.all(
+		rows
+			.map(async (row: any) => {
+				const playerId = row.playerId ?? row.id;
+				const fullName = row.fullName || row.skaterFullName || row.goalieFullName;
+				const teamId = row.teamId ?? row.currentTeamId ?? null;
+				
+				if (!playerId || !fullName) return null;
+				
+				// Lookup team name if teamId is available
+				let teamName = null;
+				if (teamId) {
+					const team = await lookupTeamById(teamId);
+					teamName = team?.fullName || null;
+				}
+				
+				return {
+					playerId,
+					fullName,
+					teamId,
+					teamName
+				};
+			})
+			.filter(Boolean)
+	);
 
 	if (!candidates.length) {
 		return [];
