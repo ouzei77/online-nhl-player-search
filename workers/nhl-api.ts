@@ -499,7 +499,22 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			// Try to get team info from the original entry before normalization
 			const teamSource = seasonData.regular ? seasonData.regular : (seasonData.playoffs ? seasonData.playoffs : null);
 			const teamAbbrev = teamSource?.teamAbbrev || teamSource?.teamAbbreviation || teamSource?.team?.abbreviation || null;
-			const teamName = teamSource?.teamName || teamSource?.team?.name || null;
+			
+			// Handle localized team name objects (teamName and teamCommonName are objects with 'default' property)
+			let teamName = null;
+			if (teamSource?.teamName) {
+				teamName = typeof teamSource.teamName === 'string' 
+					? teamSource.teamName 
+					: teamSource.teamName.default || teamSource.teamName.en || null;
+			} else if (teamSource?.teamCommonName) {
+				teamName = typeof teamSource.teamCommonName === 'string'
+					? teamSource.teamCommonName
+					: teamSource.teamCommonName.default || teamSource.teamCommonName.en || null;
+			} else if (teamSource?.team?.name) {
+				teamName = typeof teamSource.team.name === 'string'
+					? teamSource.team.name
+					: teamSource.team.name.default || teamSource.team.name.en || null;
+			}
 			
 			return {
 				season: seasonId,

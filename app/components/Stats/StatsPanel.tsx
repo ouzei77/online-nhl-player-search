@@ -121,6 +121,7 @@ interface Season {
 	season: string;
 	regular: SkaterStats | GoalieStats | null;
 	playoffs: SkaterStats | GoalieStats | null;
+	team?: string | null;
 }
 
 interface SeasonHistoryTableProps {
@@ -160,17 +161,18 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 				</thead>
 				<tbody>
 					{seasons.map((season, idx) => {
-						const hasRegular = season.regular !== null;
-						const hasPlayoffs = season.playoffs !== null;
-						const rowSpan = (hasRegular ? 1 : 0) + (hasPlayoffs ? 1 : 0);
-						
-						if (rowSpan === 0) return null;
+						// Always show both rows (regular season and playoffs) for each season
+						// Each season always has 2 rows, so rowSpan is always 2
+						const rowSpan = 2;
 
-						// Render regular season row
-						const regularRow = hasRegular ? (
+						// Render regular season row (always shown)
+						const regularRow = (
 							<tr key={`regular-${idx}`} className={styles.regularRow}>
 								<td className={styles.seasonLabel} rowSpan={rowSpan}>
-									{formatSeason(season.season)}
+									<div>{formatSeason(season.season)}</div>
+									{season.team && (
+										<div className={styles.teamLabel}>{season.team}</div>
+									)}
 								</td>
 								<td className={styles.seasonType}>Regular Season</td>
 								{!isGoalie ? (
@@ -204,18 +206,11 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 									</>
 								)}
 							</tr>
-						) : null;
+						);
 
-						// Render playoffs row
-						const playoffsRow = hasPlayoffs ? (
+						// Render playoffs row (always shown, even if no playoff stats)
+						const playoffsRow = (
 							<tr key={`playoffs-${idx}`} className={styles.playoffsRow}>
-								<td 
-									className={styles.seasonLabel} 
-									rowSpan={1} 
-									style={hasRegular ? { visibility: 'hidden', padding: 0, border: 0 } : undefined}
-								>
-									{!hasRegular ? formatSeason(season.season) : null}
-								</td>
 								<td className={styles.seasonType}>Playoffs</td>
 								{!isGoalie ? (
 									<>
@@ -248,7 +243,7 @@ const SeasonHistoryTable = ({ seasons, isGoalie }: SeasonHistoryTableProps) => {
 									</>
 								)}
 							</tr>
-						) : null;
+						);
 
 						return (
 							<React.Fragment key={idx}>
@@ -304,7 +299,7 @@ export default function StatsPanel({
 	isGoalie
 }: StatsPanelProps) {
 	// Show empty stats panel even if no player data
-	const currentSeason = playerData?.currentSeason || {};
+	const currentSeason = playerData?.currentSeason || { regular: null, playoffs: null };
 	const last5Seasons = playerData?.last5Seasons || [];
 
 	const skaterCareer = !isGoalie
