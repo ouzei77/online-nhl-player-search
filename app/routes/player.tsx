@@ -54,7 +54,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 
 	const blankImage = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
 
-	const handleSearch = async (trimmedName: string) => {
+	const handlePlayerSelect = async (playerId: number) => {
 		// Set loading state and clear previous data
 		setIsLoading(true);
 		setPlayerData(null);
@@ -63,30 +63,6 @@ export default function PlayerCard({}: Route.ComponentProps) {
 		setBtnClicked(false);
 
 		try {
-			// First, search for the player by name
-			const searchResponse = await fetch(
-				`${baseUrl}/nhl/search-player?name=${encodeURIComponent(trimmedName)}`
-			);
-
-			if (!searchResponse.ok) {
-				if (searchResponse.status === 404) {
-					alert(
-						'Player not found, make sure you have the correct name and format (e.g. "John Doe").'
-					);
-					setIsLoading(false);
-					setPlayerData(null);
-					setCareerStats(null);
-					setImage(null);
-					return;
-				}
-				throw new Error(
-					`Search failed: ${searchResponse.status} ${searchResponse.statusText}`
-				);
-			}
-
-			const searchData = await searchResponse.json();
-			const playerId = searchData.playerId;
-
 			// Fetch player data (profile + stats) from backend
 			const playerDataResponse = await fetch(
 				`${baseUrl}/nhl/player-data?playerId=${encodeURIComponent(playerId)}`
@@ -192,7 +168,12 @@ export default function PlayerCard({}: Route.ComponentProps) {
 			<LoadingScreen loading={isLoading} />
 
 			<div className="search-section">
-				<SearchForm disabled={isLoading} onSearch={handleSearch} />
+				<SearchForm
+					disabled={isLoading}
+					onSearch={() => {}} // Not used anymore, search happens in SearchForm
+					onPlayerSelect={handlePlayerSelect}
+					baseUrl={baseUrl}
+				/>
 			</div>
 
 			<div className="content-wrapper">

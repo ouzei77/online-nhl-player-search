@@ -287,16 +287,19 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 		.filter(Boolean);
 
 	if (!candidates.length) {
-		return null;
+		return [];
 	}
 
-	// Prefer exact normalized full-name match, otherwise fall back to first candidate
-	let best = candidates.find((c: any) => normalize(c.fullName) === inputNorm);
-	if (!best) {
-		best = candidates[0];
-	}
+	// Sort candidates: exact match first, then by relevance
+	const exactMatch = candidates.find((c: any) => normalize(c.fullName) === inputNorm);
+	
+	// If exact match found, put it first, otherwise use all candidates
+	const sortedCandidates = exactMatch
+		? [exactMatch, ...candidates.filter((c: any) => c !== exactMatch)]
+		: candidates;
 
-	return best;
+	// Return top 5 candidates
+	return sortedCandidates.slice(0, 5);
 }
 
 /**
@@ -646,8 +649,8 @@ export async function handleNhlApi(request: Request, env: Env): Promise<Response
 				);
 			}
 
-			const match = await searchPlayerDirectory(name);
-			if (!match) {
+			const matches = await searchPlayerDirectory(name);
+			if (!matches || matches.length === 0) {
 				return addRateLimitHeaders(
 					errorResponse('Player not found in NHL Stats directory', 404, origin, allowedOrigin)
 				);
@@ -656,9 +659,7 @@ export async function handleNhlApi(request: Request, env: Env): Promise<Response
 			return addRateLimitHeaders(
 				jsonResponse(
 					{
-						playerId: match.playerId,
-						fullName: match.fullName,
-						teamId: match.teamId
+						candidates: matches
 					},
 					200,
 					origin,
