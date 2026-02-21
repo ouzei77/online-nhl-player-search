@@ -569,11 +569,17 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 		// Get current season stats from seasonMap
 		const currentSeasonData = seasonMap.get(currentSeasonId) || { regular: null, playoffs: null };
 		
-		// Fallback to featuredStats if current season not found in seasonTotals
-		const currentRegularRaw = currentSeasonData.regular || 
-			(featuredStats?.regularSeason?.subSeason || null);
-		const currentPlayoffRaw = currentSeasonData.playoffs || 
-			(featuredStats?.playoffs?.subSeason || null);
+		// Fallback to featuredStats ONLY if it matches the current season.
+		// featuredStats.season contains the season the stats are for — if it doesn't
+		// match the current season, the player hasn't played yet and stats should be null.
+		const featuredMatchesCurrent =
+			featuredStats?.season != null &&
+			String(featuredStats.season) === currentSeasonId;
+
+		const currentRegularRaw = currentSeasonData.regular ||
+			(featuredMatchesCurrent ? featuredStats?.regularSeason?.subSeason ?? null : null);
+		const currentPlayoffRaw = currentSeasonData.playoffs ||
+			(featuredMatchesCurrent ? featuredStats?.playoffs?.subSeason ?? null : null);
 
 		const latestRegularTotals =
 			currentRegularRaw && !isGoalie
