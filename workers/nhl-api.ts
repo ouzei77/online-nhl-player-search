@@ -296,6 +296,9 @@ async function searchPlayerDirectory(rawName: string): Promise<any> {
 				
 				if (!playerId || !fullName) return null;
 				
+				// Filter out players without a team
+				if (!teamId) return null;
+				
 				// Lookup team name if teamId is available
 				let teamName = null;
 				if (teamId) {
@@ -441,26 +444,61 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				? normalizeGoalieTotals(currentPlayoffRaw)
 				: null;
 
-		// Last 5 NHL seasons
-		const regularSeasons = seasonTotalsArray
-			.filter((s: any) => s.leagueAbbrev === 'NHL')
-			.sort((a: any, b: any) => {
-				const sa = parseInt(String(a.season || '0'), 10);
-				const sb = parseInt(String(b.season || '0'), 10);
-				return sb - sa;
-			})
-			.slice(0, 5)
-			.map((s: any) => {
-				const seasonId = String(s.season || '');
-				const baseStats = s.regularSeason || s;
-				const stats = !isGoalie
-					? normalizeSkaterTotals(baseStats)
-					: normalizeGoalieTotals(baseStats);
-				return {
-					season: seasonId,
-					stats
-				};
-			});
+		// Last 5 NHL seasons - include both regular season and playoffs
+		const regularSeasons = await Promise.all(
+			seasonTotalsArray
+				.filter((s: any) => s.leagueAbbrev === 'NHL')
+				.sort((a: any, b: any) => {
+					const sa = parseInt(String(a.season || '0'), 10);
+					const sb = parseInt(String(b.season || '0'), 10);
+					return sb - sa;
+				})
+				.slice(0, 5)
+				.map(async (s: any) => {
+					const seasonId = String(s.season || '');
+					const regularBase = s.regularSeason || s;
+					const playoffsBase = s.playoffs || null;
+					
+					const regularStats = !isGoalie
+						? normalizeSkaterTotals(regularBase)
+						: normalizeGoalieTotals(regularBase);
+					
+					const playoffsStats = playoffsBase
+						? (!isGoalie
+							? normalizeSkaterTotals(playoffsBase)
+							: normalizeGoalieTotals(playoffsBase))
+						: null;
+					
+					// Get team information for this season
+					// Try multiple possible fields for team information
+					const teamId = s.teamId || regularBase?.teamId || s.currentTeamId || null;
+					const teamAbbrev = s.teamAbbrev || regularBase?.teamAbbrev || s.currentTeamAbbrev || null;
+					const teamNameRaw = s.teamName || regularBase?.teamName || null;
+					let teamName = null;
+					
+					// First try to resolve from teamId
+					if (teamId) {
+						const team = await lookupTeamById(teamId);
+						teamName = team?.fullName || null;
+					}
+					// Fall back to teamAbbrev if teamId didn't work
+					if (!teamName && teamAbbrev) {
+						const team = await lookupTeamByTricode(teamAbbrev);
+						teamName = team?.fullName || null;
+					}
+					// Use raw team name if available and nothing else worked
+					if (!teamName && teamNameRaw) {
+						teamName = typeof teamNameRaw === 'string' ? teamNameRaw : resolveLocalizedString(teamNameRaw);
+					}
+					
+					return {
+						season: seasonId,
+						regular: regularStats,
+						playoffs: playoffsStats,
+						teamName: teamName
+					};
+				})
+		);
 
 		// Career totals
 		const careerBase =
@@ -572,9 +610,16 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 
 		const last5SeasonsFormatted = regularSeasons.map((season: any) => ({
 			season: season.season,
-			stats: !isGoalie
-				? formatSkaterStats(season.stats)
-				: formatGoalieStats(season.stats)
+			regular: season.regular
+				? (!isGoalie
+					? formatSkaterStats(season.regular)
+					: formatGoalieStats(season.regular))
+				: null,
+			playoffs: season.playoffs
+				? (!isGoalie
+					? formatSkaterStats(season.playoffs)
+					: formatGoalieStats(season.playoffs))
+				: null
 		}));
 
 		return {
