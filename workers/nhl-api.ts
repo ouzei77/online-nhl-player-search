@@ -425,26 +425,6 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				null
 		});
 
-		// Current season
-		const currentRegularRaw =
-			featuredStats?.regularSeason?.subSeason || null;
-		const currentPlayoffRaw =
-			featuredStats?.playoffs?.subSeason || null;
-
-		const latestRegularTotals =
-			currentRegularRaw && !isGoalie
-				? normalizeSkaterTotals(currentRegularRaw)
-				: currentRegularRaw && isGoalie
-				? normalizeGoalieTotals(currentRegularRaw)
-				: null;
-
-		const latestPlayoffTotals =
-			currentPlayoffRaw && !isGoalie
-				? normalizeSkaterTotals(currentPlayoffRaw)
-				: currentPlayoffRaw && isGoalie
-				? normalizeGoalieTotals(currentPlayoffRaw)
-				: null;
-
 		// Last 5 NHL seasons - include both regular season and playoffs
 		// seasonTotals is an array where each entry has gameTypeId (2 = regular, 3 = playoffs)
 		const nhlSeasons = seasonTotalsArray.filter((s: any) => s.leagueAbbrev === 'NHL');
@@ -470,6 +450,38 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 				seasonData.playoffs = entry;
 			}
 		}
+
+		// Calculate current season ID based on current date
+		// NHL seasons typically start in October, so if we're in October or later, use current year
+		// Otherwise, use previous year as the season start
+		const now = new Date();
+		const currentYear = now.getFullYear();
+		const currentMonth = now.getMonth(); // 0-11, where 9 = October
+		const seasonStartYear = currentMonth >= 9 ? currentYear : currentYear - 1;
+		const currentSeasonId = `${seasonStartYear}${seasonStartYear + 1}`;
+		
+		// Get current season stats from seasonMap
+		const currentSeasonData = seasonMap.get(currentSeasonId) || { regular: null, playoffs: null };
+		
+		// Fallback to featuredStats if current season not found in seasonTotals
+		const currentRegularRaw = currentSeasonData.regular || 
+			(featuredStats?.regularSeason?.subSeason || null);
+		const currentPlayoffRaw = currentSeasonData.playoffs || 
+			(featuredStats?.playoffs?.subSeason || null);
+
+		const latestRegularTotals =
+			currentRegularRaw && !isGoalie
+				? normalizeSkaterTotals(currentRegularRaw)
+				: currentRegularRaw && isGoalie
+				? normalizeGoalieTotals(currentRegularRaw)
+				: null;
+
+		const latestPlayoffTotals =
+			currentPlayoffRaw && !isGoalie
+				? normalizeSkaterTotals(currentPlayoffRaw)
+				: currentPlayoffRaw && isGoalie
+				? normalizeGoalieTotals(currentPlayoffRaw)
+				: null;
 		
 		// Get unique seasons, sort by season (newest first), and take top 5
 		const uniqueSeasons = Array.from(seasonMap.keys())
