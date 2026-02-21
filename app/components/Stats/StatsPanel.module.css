@@ -194,17 +194,11 @@ td.seasonType {
     color: #ffffff;
 }
 
-/* Stats panel inside flip card back */
+/* Stats panel inside flip card back — base overrides (all viewports) */
 .inFlipCard {
 	border: none !important;
 	box-shadow: none !important;
 	background: transparent;
-	height: 100%;
-	max-height: 711px;
-	overflow-y: auto;
-	overflow-x: hidden;
-	padding: 60px 10px 10px 10px;
-	-webkit-overflow-scrolling: touch;
 }
 
 /* Responsive Design */
@@ -214,6 +208,16 @@ td.seasonType {
         max-height: none;
         overflow-y: visible;
         padding: 16px;
+    }
+
+    /* Override .statsPanel defaults when inside the flip-card back */
+    .inFlipCard {
+        height: 100%;
+        max-height: 711px;
+        overflow-y: auto;
+        overflow-x: hidden;
+        padding: 60px 10px 10px 10px;
+        -webkit-overflow-scrolling: touch;
     }
 
     /* Compact stats for mobile flip card */
