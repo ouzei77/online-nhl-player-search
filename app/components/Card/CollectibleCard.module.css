@@ -1,0 +1,392 @@
+.nhlCard {
+	--_primary: var(--team-primary, #ff4c00);
+	--_secondary: var(--team-secondary, #041e42);
+	--_accent: var(--team-accent, #ffffff);
+
+	width: var(--card-width, 400px);
+	height: var(--card-height, 711px);
+	position: relative;
+	overflow: hidden;
+	border-radius: 14px;
+	border: 5px solid var(--_secondary);
+	box-shadow:
+		0 14px 44px rgba(0, 0, 0, 0.5),
+		0 4px 14px rgba(0, 0, 0, 0.25);
+	font-family: 'Impact', 'Haettenschweiler', 'Arial Narrow Bold', sans-serif;
+	margin: 0 auto;
+	background: #0a1628;
+}
+
+.nhlCard::after {
+	content: '';
+	position: absolute;
+	inset: 3px;
+	border: 1px solid rgba(255, 255, 255, 0.1);
+	border-radius: 9px;
+	z-index: 25;
+	pointer-events: none;
+}
+
+.playerLayer {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	background: radial-gradient(circle at top, #444, #000);
+}
+
+.playerBgImg {
+	width: 100%;
+	height: 62.5%;
+	object-fit: cover;
+	object-position: top center;
+	mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+	-webkit-mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+}
+
+.vPanel {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	width: 40%;
+	z-index: 2; /* Behind player image to avoid covering it */
+	overflow: hidden;
+}
+
+.panelLeft {
+	left: -12%;
+	transform: skewX(25deg);
+	background-color: var(--team-primary, #333);
+	border-right: 6px solid rgba(255, 255, 255, 0.9);
+	box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.panelRight {
+	right: -12%;
+	transform: skewX(-25deg);
+	background: linear-gradient(150deg, #c2dcee, #e6f2fa);
+	border-left: 6px solid rgba(255, 255, 255, 0.9);
+	box-shadow: -4px 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.panelTexture {
+	width: 150%;
+	height: 100%;
+	transform: skewX(18deg);
+	margin-left: 10%;
+	background: linear-gradient(
+		135deg,
+		rgba(255, 255, 255, 0.1) 25%,
+		transparent 25%
+	);
+	background-size: 20px 20px;
+	opacity: 0.2;
+}
+
+.iceTexture {
+	width: 150%;
+	height: 100%;
+	transform: skewX(-18deg);
+	margin-right: 10%;
+	opacity: 0.6;
+	background: linear-gradient(
+		73deg,
+		transparent 29%,
+		rgba(255, 255, 255, 0.4) 30%,
+		transparent 31%
+	);
+}
+
+.nhlCardContent {
+	position: absolute;
+	inset: 0;
+	z-index: 5;
+	pointer-events: none;
+}
+
+.teamLogoTopLeft {
+	position: absolute;
+	top: 18px;
+	left: 18px;
+	z-index: 6;
+	width: 64px;
+	height: 64px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(255, 255, 255, 0.18);
+	border-radius: 50%;
+	padding: 8px;
+	backdrop-filter: blur(6px);
+	-webkit-backdrop-filter: blur(6px);
+	box-shadow:
+		0 4px 14px rgba(0, 0, 0, 0.35),
+		inset 0 1px 0 rgba(255, 255, 255, 0.3);
+	border: 1.5px solid rgba(255, 255, 255, 0.22);
+}
+
+.teamLogo {
+	width: 100%;
+	height: 100%;
+	object-fit: contain;
+	filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.35));
+}
+
+.bottomBannerContainer {
+	position: absolute;
+	bottom: 20px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	z-index: 6;
+}
+
+.bannerTop,
+.bannerBottom {
+	text-transform: uppercase;
+	font-weight: 900;
+	padding: 8px 30px;
+	transform: skewX(-20deg);
+	box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+	text-align: center;
+}
+
+.bannerTop span,
+.bannerBottom span {
+	display: block;
+	transform: skewX(20deg);
+}
+
+.bannerTop {
+	background: #fff;
+	width: 85%;
+	margin-bottom: 5px;
+	border-left: 8px solid var(--team-primary, #333);
+}
+
+.teamNameText {
+	color: var(--team-secondary, #000);
+	font-size: 1.2rem;
+	letter-spacing: 2px;
+}
+
+.bannerBottom {
+	background: var(--team-secondary, #041e42);
+	width: 70%;
+	border-left: 8px solid #fff;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+}
+
+.playerName {
+	color: #ffffff;
+	font-size: 1.15rem;
+	text-transform: uppercase;
+	font-weight: 900;
+	letter-spacing: 0.1em;
+	line-height: 1;
+	text-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.playerNumber {
+	font-size: 0.85rem;
+	color: rgba(255, 255, 255, 0.88);
+	font-weight: 800;
+	letter-spacing: 0.08em;
+	text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* Team color themes */
+.anaheim-ducks {
+	--team-primary: #f47a38;
+	--team-secondary: #000000;
+	--team-accent: #b9975b;
+}
+
+.arizona-coyotes {
+	--team-primary: #8c2633;
+	--team-secondary: #000000;
+	--team-accent: #e2d6b5;
+}
+
+.boston-bruins {
+	--team-primary: #ffb81c;
+	--team-secondary: #000000;
+	--team-accent: #ffffff;
+}
+
+.buffalo-sabres {
+	--team-primary: #fcb514;
+	--team-secondary: #002654;
+	--team-accent: #adafaa;
+}
+
+.calgary-flames {
+	--team-primary: #c8102e;
+	--team-secondary: #000000;
+	--team-accent: #f1be48;
+}
+
+.carolina-hurricanes {
+	--team-primary: #cc0000;
+	--team-secondary: #000000;
+	--team-accent: #a2aaad;
+}
+
+.chicago-blackhawks {
+	--team-primary: #cf0a2c;
+	--team-secondary: #000000;
+	--team-accent: #ffd100;
+}
+
+.colorado-avalanche {
+	--team-primary: #6f263d;
+	--team-secondary: #236192;
+	--team-accent: #a2aaad;
+}
+
+.columbus-blue-jackets {
+	--team-primary: #ce1126;
+	--team-secondary: #002654;
+	--team-accent: #a4a9ad;
+}
+
+.dallas-stars {
+	--team-primary: #006847;
+	--team-secondary: #000000;
+	--team-accent: #8f8f8c;
+}
+
+.detroit-red-wings {
+	--team-primary: #ce1126;
+	--team-secondary: #000000;
+	--team-accent: #ffffff;
+}
+
+.edmonton-oilers {
+	--team-primary: #ff4c00;
+	--team-secondary: #041e42;
+	--team-accent: #ffffff;
+}
+
+.florida-panthers {
+	--team-primary: #c8102e;
+	--team-secondary: #041e42;
+	--team-accent: #b9975b;
+}
+
+.los-angeles-kings {
+	--team-primary: #a2aaad;
+	--team-secondary: #111111;
+	--team-accent: #ffffff;
+}
+
+.minnesota-wild {
+	--team-primary: #154734;
+	--team-secondary: #a6192e;
+	--team-accent: #eaaa00;
+}
+
+.montreal-canadiens {
+	--team-primary: #af1e2d;
+	--team-secondary: #192168;
+	--team-accent: #ffffff;
+}
+
+.nashville-predators {
+	--team-primary: #ffb81c;
+	--team-secondary: #041e42;
+	--team-accent: #ffffff;
+}
+
+.new-jersey-devils {
+	--team-primary: #ce1126;
+	--team-secondary: #000000;
+	--team-accent: #ffffff;
+}
+
+.new-york-islanders {
+	--team-primary: #f47d30;
+	--team-secondary: #00539b;
+	--team-accent: #ffffff;
+}
+
+.new-york-rangers {
+	--team-primary: #0038a8;
+	--team-secondary: #ce1126;
+	--team-accent: #ffffff;
+}
+
+.ottawa-senators {
+	--team-primary: #c52032;
+	--team-secondary: #000000;
+	--team-accent: #c69214;
+}
+
+.philadelphia-flyers {
+	--team-primary: #f74902;
+	--team-secondary: #000000;
+	--team-accent: #ffffff;
+}
+
+.pittsburgh-penguins {
+	--team-primary: #fcb514;
+	--team-secondary: #000000;
+	--team-accent: #ffffff;
+}
+
+.san-jose-sharks {
+	--team-primary: #006d75;
+	--team-secondary: #000000;
+	--team-accent: #ea7200;
+}
+
+.seattle-kraken {
+	--team-primary: #99d9d9;
+	--team-secondary: #001628;
+	--team-accent: #e9072b;
+}
+
+.st-louis-blues {
+	--team-primary: #ffb81c;
+	--team-secondary: #002f87;
+	--team-accent: #041e42;
+}
+
+.tampa-bay-lightning {
+	--team-primary: #002868;
+	--team-secondary: #000000;
+	--team-accent: #ffffff;
+}
+
+.toronto-maple-leafs {
+	--team-primary: #00205b;
+	--team-secondary: #00205b;
+	--team-accent: #ffffff;
+}
+
+.vancouver-canucks {
+	--team-primary: #00205b;
+	--team-secondary: #00843d;
+	--team-accent: #ffffff;
+}
+
+.vegas-golden-knights {
+	--team-primary: #b4975a;
+	--team-secondary: #333f42;
+	--team-accent: #c8102e;
+}
+
+.washington-capitals {
+	--team-primary: #c8102e;
+	--team-secondary: #041e42;
+	--team-accent: #ffffff;
+}
+
+.winnipeg-jets {
+	--team-primary: #004c97;
+	--team-secondary: #041e42;
+	--team-accent: #ac162c;
+}
