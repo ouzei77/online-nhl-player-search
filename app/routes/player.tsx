@@ -208,7 +208,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 									onClick={() => setIsFlipped(false)}
 									aria-label="Flip back to card"
 								>
-									← Back to Card
+									←
 								</button>
 							</div>
 							<StatsPanel

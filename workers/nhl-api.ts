@@ -196,6 +196,29 @@ async function lookupTeamById(teamId: number): Promise<any> {
 }
 
 /**
+ * Lookup team abbreviation by team name
+ */
+async function lookupTeamAbbrevByName(teamName: string): Promise<string | null> {
+	if (!teamName) return null;
+	const meta = await fetchTeamMetaFromStats();
+	const normalizedName = teamName.toLowerCase().trim();
+	
+	// Try to find team by full name
+	const team = meta.teams.find((t: any) => {
+		const fullName = (t.fullName || '').toLowerCase().trim();
+		// Check exact match or if one contains the other
+		return fullName === normalizedName || 
+		       fullName.includes(normalizedName) || 
+		       normalizedName.includes(fullName) ||
+		       // Also check if team name matches common patterns (e.g., "Oilers" in "Edmonton Oilers")
+		       fullName.split(' ').some((word: string) => word === normalizedName) ||
+		       normalizedName.split(' ').some((word: string) => word && fullName.includes(word));
+	});
+	
+	return team ? team.triCode : null;
+}
+
+/**
  * Enrich team data with metadata
  */
 async function enrichTeamData(teamData: any): Promise<any> {
@@ -510,7 +533,7 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			})
 			.slice(0, 5);
 		
-		const regularSeasons = uniqueSeasons.map((seasonId) => {
+		const regularSeasons = await Promise.all(uniqueSeasons.map(async (seasonId) => {
 			const seasonData = seasonMap.get(seasonId)!;
 			
 			const regularStats = seasonData.regular
@@ -528,7 +551,7 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 			// Extract team information from regular season entry (or playoffs if regular doesn't exist)
 			// Try to get team info from the original entry before normalization
 			const teamSource = seasonData.regular ? seasonData.regular : (seasonData.playoffs ? seasonData.playoffs : null);
-			const teamAbbrev = teamSource?.teamAbbrev || teamSource?.teamAbbreviation || teamSource?.team?.abbreviation || null;
+			let teamAbbrev = teamSource?.teamAbbrev || teamSource?.teamAbbreviation || teamSource?.team?.abbreviation || null;
 			
 			// Handle localized team name objects (teamName and teamCommonName are objects with 'default' property)
 			let teamName = null;
@@ -546,13 +569,18 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 					: teamSource.team.name.default || teamSource.team.name.en || null;
 			}
 			
+			// If we don't have abbreviation but have team name, try to look it up
+			if (!teamAbbrev && teamName) {
+				teamAbbrev = await lookupTeamAbbrevByName(teamName);
+			}
+			
 			return {
 				season: seasonId,
 				regular: regularStats,
 				playoffs: playoffsStats,
-				team: teamAbbrev || teamName || null
+				team: teamAbbrev || null  // Only return abbreviation, never full name
 			};
-		});
+		}));
 
 		// Career totals
 		const careerBase =
