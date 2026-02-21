@@ -495,10 +495,17 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 					: normalizeGoalieTotals(seasonData.playoffs))
 				: null;
 			
+			// Extract team information from regular season entry (or playoffs if regular doesn't exist)
+			// Try to get team info from the original entry before normalization
+			const teamSource = seasonData.regular ? seasonData.regular : (seasonData.playoffs ? seasonData.playoffs : null);
+			const teamAbbrev = teamSource?.teamAbbrev || teamSource?.teamAbbreviation || teamSource?.team?.abbreviation || null;
+			const teamName = teamSource?.teamName || teamSource?.team?.name || null;
+			
 			return {
 				season: seasonId,
 				regular: regularStats,
-				playoffs: playoffsStats
+				playoffs: playoffsStats,
+				team: teamAbbrev || teamName || null
 			};
 		});
 
