@@ -53,11 +53,15 @@ interface PlayerData {
 interface CollectibleCardProps {
 	playerData: PlayerData;
 	image: string;
+	onFlip?: () => void;
+	isFlipped?: boolean;
 }
 
 export default function CollectibleCard({
 	playerData,
-	image
+	image,
+	onFlip,
+	isFlipped
 }: CollectibleCardProps) {
 	const teamAbbrev = playerData?.team?.alias;
 	const teamClassKey = teamAbbrev ? TEAM_CLASS_MAP[teamAbbrev] : null;
@@ -67,7 +71,18 @@ export default function CollectibleCard({
 	const playerName = playerData?.full_name || '';
 
 	return (
-		<div className={`${styles.nhlCard} ${teamClassName}`}>
+		<div 
+			className={`${styles.nhlCard} ${teamClassName} ${onFlip ? styles.clickable : ''}`}
+			onClick={onFlip}
+			role={onFlip ? 'button' : undefined}
+			tabIndex={onFlip ? 0 : undefined}
+			onKeyDown={onFlip ? (e) => {
+				if (e.key === 'Enter' || e.key === ' ') {
+					e.preventDefault();
+					onFlip();
+				}
+			} : undefined}
+		>
 			{/* LAYER 1: Player Background Image */}
 			<div className={styles.playerLayer}>
 				{image && (
@@ -136,6 +151,14 @@ export default function CollectibleCard({
 						)}
 					</div>
 				</div>
+
+				{/* Mobile flip hint */}
+				{onFlip && playerName && playerName !== 'Search for a player' && (
+					<div className={styles.flipHint}>
+						<div className={styles.flipHintIcon}>↻</div>
+						<div className={styles.flipHintText}>Tap to view stats</div>
+					</div>
+				)}
 			</div>
 		</div>
 	);

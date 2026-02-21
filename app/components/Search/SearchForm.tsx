@@ -42,6 +42,7 @@ export default function SearchForm({
 	const [candidates, setCandidates] = useState<PlayerCandidate[]>([]);
 	const [showDropdown, setShowDropdown] = useState(false);
 	const [isSearching, setIsSearching] = useState(false);
+	const [selectedIndex, setSelectedIndex] = useState(-1);
 	const searchDivRef = useRef<HTMLDivElement>(null);
 	const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -84,6 +85,7 @@ export default function SearchForm({
 				// Show dropdown with candidates
 				setCandidates(foundCandidates);
 				setShowDropdown(true);
+				setSelectedIndex(-1);
 			}
 		} catch (err) {
 			// Don't show error for autocomplete failures
@@ -146,6 +148,7 @@ export default function SearchForm({
 				// Show dropdown with multiple candidates
 				setCandidates(foundCandidates);
 				setShowDropdown(true);
+				setSelectedIndex(-1);
 			}
 		} catch (err) {
 			alert('An error occurred while searching. Please try again.');
@@ -159,6 +162,7 @@ export default function SearchForm({
 	const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const newValue = e.target.value;
 		setValue(newValue);
+		setSelectedIndex(-1); // Reset selection when typing
 
 		// Clear previous debounce timer
 		if (debounceTimerRef.current) {
@@ -184,6 +188,7 @@ export default function SearchForm({
 		setCandidates([]);
 		setShowDropdown(false);
 		setValue(fullName);
+		setSelectedIndex(-1);
 	};
 
 	const handleCloseDropdown = () => {
@@ -194,10 +199,31 @@ export default function SearchForm({
 	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
 		if (e.key === 'Enter') {
 			e.preventDefault();
-			handleSearch();
+			// If a suggestion is selected, select it; otherwise perform search
+			if (showDropdown && selectedIndex >= 0 && selectedIndex < candidates.length) {
+				const selectedCandidate = candidates[selectedIndex];
+				handlePlayerSelect(selectedCandidate.playerId, selectedCandidate.fullName);
+			} else {
+				handleSearch();
+			}
 		} else if (e.key === 'Escape') {
 			setShowDropdown(false);
 			setCandidates([]);
+			setSelectedIndex(-1);
+		} else if (e.key === 'ArrowDown') {
+			e.preventDefault();
+			if (showDropdown && candidates.length > 0) {
+				setSelectedIndex((prev) => 
+					prev < candidates.length - 1 ? prev + 1 : prev
+				);
+			}
+		} else if (e.key === 'ArrowUp') {
+			e.preventDefault();
+			if (showDropdown && candidates.length > 0) {
+				setSelectedIndex((prev) => 
+					prev > 0 ? prev - 1 : -1
+				);
+			}
 		}
 	};
 
@@ -254,6 +280,7 @@ export default function SearchForm({
 					candidates={candidates}
 					onSelect={handlePlayerSelect}
 					onClose={handleCloseDropdown}
+					selectedIndex={selectedIndex}
 				/>
 			)}
 		</div>

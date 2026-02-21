@@ -404,10 +404,70 @@
 	--team-accent: #ac162c;
 }
 
-/* Responsive Design */
+/* Clickable card for mobile */
+.clickable {
+	cursor: pointer;
+	transition: transform 0.1s ease;
+}
+
+.clickable:active {
+	transform: scale(0.98);
+}
+
+/* Flip hint for mobile */
+.flipHint {
+	position: absolute;
+	bottom: 100px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 10;
+	display: none; /* Hidden by default, shown on mobile */
+	pointer-events: none;
+	text-align: center;
+}
+
+.flipHintIcon {
+	font-size: 2rem;
+	color: #cba328;
+	margin-bottom: 8px;
+	animation: rotateHint 2s ease-in-out infinite;
+	text-shadow: 2px 2px 0px #000000;
+	filter: drop-shadow(0 0 8px rgba(203, 163, 40, 0.6));
+}
+
+.flipHintText {
+	font-size: 0.6rem;
+	color: #ffffff;
+	background: rgba(0, 0, 0, 0.8);
+	padding: 8px 16px;
+	border: 2px solid #cba328;
+	border-radius: 4px;
+	text-shadow: 1px 1px 0px #000000;
+	box-shadow: 
+		inset 0 0 0 1px #000000,
+		0 0 0 1px #000000,
+		0 4px 12px rgba(0, 0, 0, 0.5);
+	font-family: 'Press Start 2P', monospace;
+	letter-spacing: 0.05em;
+}
+
+@keyframes rotateHint {
+	0%, 100% {
+		transform: rotate(0deg);
+	}
+	50% {
+		transform: rotate(180deg);
+	}
+}
+
+/* Show flip hint on mobile */
 @media (max-width: 1024px) {
 	.nhlCard {
 		height: auto;
 		min-height: 711px;
+	}
+
+	.flipHint {
+		display: block;
 	}
 }

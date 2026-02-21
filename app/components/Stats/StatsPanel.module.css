@@ -172,5 +172,6 @@ td.seasonType {
         height: auto;
         max-height: none;
         overflow-y: visible;
+        padding: 16px;
     }
 }

@@ -51,6 +51,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 	const [careerStats, setCareerStats] = useState<PlayerData['careerStats'] | null>(null);
 	const [btnClicked, setBtnClicked] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
+	const [isFlipped, setIsFlipped] = useState(false);
 
 	const blankImage = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
 
@@ -103,6 +104,7 @@ export default function PlayerCard({}: Route.ComponentProps) {
 			setImage(imageUrl);
 			setCareerStats(playerDataJson.careerStats);
 			setBtnClicked(true);
+			setIsFlipped(false); // Reset flip state when new player is selected
 			setIsLoading(false);
 		} catch (err) {
 			setIsLoading(false);
@@ -177,16 +179,45 @@ export default function PlayerCard({}: Route.ComponentProps) {
 			</div>
 
 			<div className="content-wrapper">
-				{/* Left side - Stats */}
-				<StatsPanel
-					playerData={displayPlayerData}
-					careerStats={displayCareerStats}
-					isGoalie={displayIsGoalie}
-				/>
+				{/* Left side - Stats (desktop only) */}
+				<div className="stats-panel-desktop">
+					<StatsPanel
+						playerData={displayPlayerData}
+						careerStats={displayCareerStats}
+						isGoalie={displayIsGoalie}
+					/>
+				</div>
 
-				{/* Right side - Card */}
+				{/* Right side - Card with flip functionality */}
 				<div className="card-panel">
-					<CollectibleCard playerData={displayPlayerData} image={displayImage} />
+					<div className={`flip-card-container ${isFlipped ? 'flipped' : ''}`}>
+						{/* Front of card */}
+						<div className="flip-card-front">
+							<CollectibleCard 
+								playerData={displayPlayerData} 
+								image={displayImage}
+								onFlip={() => setIsFlipped(!isFlipped)}
+								isFlipped={isFlipped}
+							/>
+						</div>
+						{/* Back of card - Stats (mobile only) */}
+						<div className="flip-card-back">
+							<div className="flip-back-button-wrapper">
+								<button 
+									className="flip-back-button"
+									onClick={() => setIsFlipped(false)}
+									aria-label="Flip back to card"
+								>
+									← Back to Card
+								</button>
+							</div>
+							<StatsPanel
+								playerData={displayPlayerData}
+								careerStats={displayCareerStats}
+								isGoalie={displayIsGoalie}
+							/>
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>

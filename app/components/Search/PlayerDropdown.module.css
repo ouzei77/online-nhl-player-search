@@ -72,6 +72,10 @@
 	background-color: rgba(203, 163, 40, 0.2);
 }
 
+.dropdownItemActive {
+	background-color: rgba(203, 163, 40, 0.3) !important;
+}
+
 .dropdownItem:active {
 	background-color: rgba(203, 163, 40, 0.3);
 }
