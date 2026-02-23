@@ -74,9 +74,60 @@
 .panelRight {
 	right: -12%;
 	transform: skewX(-25deg);
-	background: linear-gradient(150deg, #c2dcee, #e6f2fa);
-	border-left: 6px solid rgba(255, 255, 255, 0.9);
-	box-shadow: -4px 0 10px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+
+	/* ── Realistic ice surface ── */
+	background:
+		/* Fine frost-crystal diagonal streaks */
+		repeating-linear-gradient(
+			-55deg,
+			transparent 0px,
+			transparent 2px,
+			rgba(255, 255, 255, 0.18) 2px,
+			rgba(255, 255, 255, 0.18) 3px
+		),
+		/* Hairline ice-crack lines */
+		repeating-linear-gradient(
+			68deg,
+			transparent 0px,
+			transparent 14px,
+			rgba(160, 210, 240, 0.22) 14px,
+			rgba(160, 210, 240, 0.22) 15px
+		),
+		/* Second crack set at opposing angle */
+		repeating-linear-gradient(
+			-22deg,
+			transparent 0px,
+			transparent 20px,
+			rgba(130, 195, 235, 0.15) 20px,
+			rgba(130, 195, 235, 0.15) 21px
+		),
+		/* Micro frost texture */
+		repeating-linear-gradient(
+			135deg,
+			transparent 0px,
+			transparent 5px,
+			rgba(200, 230, 250, 0.10) 5px,
+			rgba(200, 230, 250, 0.10) 6px
+		),
+		/* Glassy frozen depth gradient */
+		linear-gradient(
+			165deg,
+			#d8eef8 0%,
+			#e4f3fb 12%,
+			#c8e2f0 28%,
+			#daeefa 42%,
+			#c0dbed 56%,
+			#d2eaf6 70%,
+			#e0f1fb 84%,
+			#cbe4f2 100%
+		);
+
+	border-left: 6px solid rgba(255, 255, 255, 0.92);
+	box-shadow:
+		-4px 0 10px rgba(0, 0, 0, 0.5),
+		inset 2px 0 15px rgba(125, 204, 239, 0.25),
+		inset -2px 0 10px rgba(200, 235, 255, 0.20);
 }
 
 .panelTexture {
@@ -94,17 +145,72 @@
 }
 
 .iceTexture {
+	position: absolute;
+	inset: 0;
 	width: 150%;
 	height: 100%;
 	transform: skewX(-18deg);
 	margin-right: 10%;
-	opacity: 0.6;
+
+	/* Layered frost / crack overlay inside the ice panel */
+	background:
+		/* Bright central specular highlight */
+		linear-gradient(
+			73deg,
+			transparent 28%,
+			rgba(255, 255, 255, 0.55) 30%,
+			transparent 32%
+		),
+		/* Softer secondary highlight */
+		linear-gradient(
+			73deg,
+			transparent 44%,
+			rgba(255, 255, 255, 0.20) 46%,
+			transparent 48%
+		),
+		/* Deep hairline cracks */
+		repeating-linear-gradient(
+			-40deg,
+			transparent 0px,
+			transparent 18px,
+			rgba(100, 170, 210, 0.12) 18px,
+			rgba(100, 170, 210, 0.12) 19px
+		),
+		/* Frost speckles */
+		repeating-linear-gradient(
+			115deg,
+			transparent 0px,
+			transparent 9px,
+			rgba(255, 255, 255, 0.08) 9px,
+			rgba(255, 255, 255, 0.08) 10px
+		);
+	opacity: 0.85;
+}
+
+/* Animated ice-shine sweep across the ice panel */
+.panelRight::after {
+	content: '';
+	position: absolute;
+	inset: 0;
 	background: linear-gradient(
 		73deg,
-		transparent 29%,
-		rgba(255, 255, 255, 0.4) 30%,
-		transparent 31%
+		rgba(255, 255, 255, 0)    0%,
+		rgba(255, 255, 255, 0)   38%,
+		rgba(255, 255, 255, 0.18) 44%,
+		rgba(200, 235, 255, 0.30) 50%,
+		rgba(255, 255, 255, 0.18) 56%,
+		rgba(255, 255, 255, 0)   62%,
+		rgba(255, 255, 255, 0)  100%
 	);
+	background-size: 300% 100%;
+	animation: iceShine 8s ease-in-out infinite;
+	pointer-events: none;
+}
+
+@keyframes iceShine {
+	0%   { background-position: 180% 0; }
+	18%  { background-position: -80% 0; }
+	100% { background-position: -80% 0; }
 }
 
 .nhlCardContent {
@@ -159,106 +265,18 @@
 	font-weight: normal;
 	padding: 12px 24px;
 	text-align: center;
+	background: #000000;
 	color: #ffffff;
 	font-family: 'Courier New', monospace;
 	font-size: 12px;
-	position: relative;
-	overflow: hidden;
-
-	/* ── Ice-texture background (pure CSS, no image dependency) ── */
-	background:
-		/* Fine frost-crystal diagonal streaks */
-		repeating-linear-gradient(
-			-55deg,
-			transparent 0px,
-			transparent 3px,
-			rgba(255, 255, 255, 0.045) 3px,
-			rgba(255, 255, 255, 0.045) 5px
-		),
-		/* Hairline ice-crack lines */
-		repeating-linear-gradient(
-			62deg,
-			transparent 0px,
-			transparent 11px,
-			rgba(180, 220, 255, 0.07) 11px,
-			rgba(180, 220, 255, 0.07) 12px
-		),
-		/* Second set of cracks at opposing angle */
-		repeating-linear-gradient(
-			-18deg,
-			transparent 0px,
-			transparent 16px,
-			rgba(140, 200, 240, 0.04) 16px,
-			rgba(140, 200, 240, 0.04) 17px
-		),
-		/* Sub-surface depth undulations */
-		repeating-linear-gradient(
-			135deg,
-			transparent 0px,
-			transparent 7px,
-			rgba(80, 160, 210, 0.035) 7px,
-			rgba(80, 160, 210, 0.035) 9px
-		),
-		/* Frozen surface with glassy depth gradient */
-		linear-gradient(
-			160deg,
-			rgba(6, 24, 52, 0.94) 0%,
-			rgba(12, 44, 78, 0.88) 18%,
-			rgba(22, 60, 96, 0.84) 35%,
-			rgba(10, 38, 70, 0.90) 52%,
-			rgba(18, 54, 88, 0.86) 68%,
-			rgba(24, 64, 100, 0.83) 82%,
-			rgba(8, 28, 56, 0.93) 100%
-		),
-		/* Base frozen colour */
-		#0a2d4a;
-
-	/* Icy frost border */
-	border: 2px solid rgba(140, 210, 245, 0.50);
-
-	/* Layered glow: inner frost + outer icy halo */
-	box-shadow:
-		inset 0  1px 0   rgba(255, 255, 255, 0.18),
-		inset 0 -1px 0   rgba(0, 15, 40, 0.45),
-		inset 0  0  10px rgba(125, 204, 239, 0.20),
-		inset 0  0  20px rgba(41, 131, 172, 0.10),
-		0 0  6px rgba(125, 204, 239, 0.35),
-		0 0 14px rgba(58, 122, 155, 0.25),
-		0 0 28px rgba(41, 131, 172, 0.12);
-
-	/* Icy text glow (inspired by the Frozen drop-shadow stack) */
-	text-shadow:
-		0 0 3px  rgba(200, 235, 255, 0.55),
-		0 0 6px  rgba(125, 204, 239, 0.35),
-		0 0 12px rgba(41, 131, 172, 0.20),
-		1px 1px 0px rgba(0, 0, 0, 0.50);
-}
-
-/* Animated ice-shine sweep across both banners */
-.bannerTop::after,
-.bannerBottom::after {
-	content: '';
-	position: absolute;
-	inset: 0;
-	background: linear-gradient(
-		105deg,
-		rgba(255, 255, 255, 0)    0%,
-		rgba(255, 255, 255, 0)   40%,
-		rgba(255, 255, 255, 0.13) 45%,
-		rgba(200, 235, 255, 0.22) 50%,
-		rgba(255, 255, 255, 0.13) 55%,
-		rgba(255, 255, 255, 0)   60%,
-		rgba(255, 255, 255, 0)  100%
-	);
-	background-size: 250% 100%;
-	animation: iceShine 7s ease-in-out infinite;
-	pointer-events: none;
-}
-
-@keyframes iceShine {
-	0%   { background-position: 150% 0; }
-	15%  { background-position: -50% 0; }
-	100% { background-position: -50% 0; }
+	border: 2px solid #cba328;
+	box-shadow: 
+		inset 0 0 0 1px #000000,
+		0 0 0 1px #000000;
+	text-shadow: none;
+	image-rendering: pixelated;
+	image-rendering: -moz-crisp-edges;
+	image-rendering: crisp-edges;
 }
 
 .bannerTop span,
@@ -272,13 +290,10 @@
 }
 
 .teamNameText {
-	color: #e0f4ff;
+	color: #ffffff;
 	font-size: 12px;
 	letter-spacing: 0.05em;
-	text-shadow:
-		0 0 3px rgba(200, 235, 255, 0.55),
-		0 0 6px rgba(125, 204, 239, 0.35),
-		1px 1px 0px rgba(0, 0, 0, 0.50);
+	text-shadow: none;
 }
 
 .bannerBottom {
@@ -290,27 +305,21 @@
 }
 
 .playerName {
-	color: #e8f6ff;
+	color: #ffffff;
 	font-size: 0.7rem;
 	text-transform: uppercase;
 	font-weight: normal;
 	letter-spacing: 0.05em;
 	line-height: 1.2;
-	text-shadow:
-		0 0 3px rgba(200, 235, 255, 0.6),
-		0 0 8px rgba(125, 204, 239, 0.3),
-		1px 1px 0px rgba(0, 0, 0, 0.55);
+	text-shadow: 1px 1px 0px #000000;
 }
 
 .playerNumber {
 	font-size: 0.6rem;
-	color: #b8e8ff;
+	color: #cba328;
 	font-weight: normal;
 	letter-spacing: 0.05em;
-	text-shadow:
-		0 0 3px rgba(200, 235, 255, 0.5),
-		0 0 6px rgba(125, 204, 239, 0.25),
-		1px 1px 0px rgba(0, 0, 0, 0.55);
+	text-shadow: 1px 1px 0px #000000;
 }
 
 /* Team color themes */
