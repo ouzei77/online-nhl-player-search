@@ -1,5 +1,7 @@
-/** Default fallback headshot image URL used across the app */
-export const DEFAULT_SKATER_MUG = 'https://assets.nhle.com/mugs/nhl/default-skater.png';
+/** Default fallback headshot image URL used across the app.
+ *  Served through our own image proxy so it arrives pre-downsampled
+ *  (64 × 64 px) — `image-rendering: pixelated` stretches it for the retro look. */
+export const DEFAULT_SKATER_MUG = '/nhl/player-headshot?default=true';
 
 export interface SkaterStats {
 	games_played?: number;

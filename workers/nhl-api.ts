@@ -6,6 +6,14 @@
 const NHL_API_BASE = 'https://api-web.nhle.com/v1';
 const NHL_STATS_API_BASE = 'https://api.nhle.com/stats/rest/en';
 
+// ── Image-proxy configuration ───────────────────────────────────────────────
+// Downsample external NHL images so the browser receives tiny pixel-art files
+// that `image-rendering: pixelated` stretches across the card.
+const HEADSHOT_PX = 64;   // player headshot → 64 × 64
+const LOGO_PX     = 32;   // team logo       → 32 × 32
+const IMG_CACHE_TTL = 7 * 24 * 60 * 60; // 7-day edge cache (seconds)
+const ALLOWED_IMAGE_HOST = 'assets.nhle.com';
+
 // Rate limiting configuration
 const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
 const RATE_LIMIT_MAX_REQUESTS = 100;
@@ -695,11 +703,15 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 		teamData = await enrichTeamData(teamData);
 
 		const finalTeamAbbrev = teamData.abbreviation || teamAbbrev || '';
+		// Proxy URLs — images are downsampled (64 × 64 / 32 × 32) by the
+		// /nhl/player-headshot and /nhl/team-logo endpoints so the browser
+		// receives tiny pixel-art files that image-rendering: pixelated can
+		// stretch across the card without any extra work.
 		const teamLogoUrl = finalTeamAbbrev
-			? `https://assets.nhle.com/logos/nhl/svg/${finalTeamAbbrev}_light.svg`
+			? `/nhl/team-logo?team=${encodeURIComponent(finalTeamAbbrev)}`
 			: null;
 
-		// Headshot mug URL
+		// Headshot mug URL (via proxy)
 		const currentYearForMug = now.getFullYear();
 		const currentMonthForMug = now.getMonth();
 		const mugSeasonStartYear =
@@ -707,8 +719,8 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 		const mugSeasonId = `${mugSeasonStartYear}${mugSeasonStartYear + 1}`;
 		const teamCodeForMug = finalTeamAbbrev || teamAbbrev || '';
 		const headshotUrl = teamCodeForMug
-			? `https://assets.nhle.com/mugs/nhl/${mugSeasonId}/${teamCodeForMug}/${playerId}.png`
-			: 'https://assets.nhle.com/mugs/nhl/default-skater.png';
+			? `/nhl/player-headshot?playerId=${playerId}&team=${encodeURIComponent(teamCodeForMug)}&season=${mugSeasonId}`
+			: '/nhl/player-headshot?default=true';
 
 		const formatSkaterStats = (stats: any) => ({
 			games_played: stats.games || 0,
@@ -799,6 +811,134 @@ async function fetchPlayerDataFromNhl(playerId: number): Promise<any> {
 	}
 }
 
+// ── Image proxy helpers ─────────────────────────────────────────────────────
+
+/**
+ * Fetch an image from the NHL CDN, resize it via Cloudflare Image Resizing,
+ * and stream the tiny result back.  Falls back to the original image if
+ * Image Resizing is not enabled on the zone.
+ */
+async function proxyAndResize(
+	imageUrl: string,
+	width: number,
+	height: number,
+	fit: 'cover' | 'contain',
+	origin: string | null,
+	allowedOrigin: string
+): Promise<Response> {
+	// Security: only allow fetching from the NHL assets CDN
+	const parsed = new URL(imageUrl);
+	if (parsed.hostname !== ALLOWED_IMAGE_HOST) {
+		return errorResponse('Forbidden image host', 403, origin, allowedOrigin);
+	}
+
+	// 1. Try Cloudflare Image Resizing (requires Image Resizing on zone)
+	try {
+		const resized = await fetch(imageUrl, {
+			cf: {
+				image: {
+					width,
+					height,
+					fit,
+					format: 'png',
+					quality: 100
+				}
+			}
+		} as RequestInit);
+
+		if (resized.ok) {
+			const headers = getCorsHeaders(origin, allowedOrigin);
+			headers.set('Content-Type', 'image/png');
+			headers.set('Cache-Control', `public, max-age=${IMG_CACHE_TTL}, immutable`);
+			return new Response(resized.body, { status: 200, headers });
+		}
+		// Non-OK (e.g. 403 when Image Resizing is disabled) → fall through
+	} catch {
+		// cf.image not available in this environment → fall through
+	}
+
+	// 2. Fallback: stream the original image unchanged
+	try {
+		const original = await fetch(imageUrl, {
+			headers: { 'User-Agent': 'NHL-Card-App/1.0' }
+		});
+
+		if (!original.ok) {
+			return errorResponse('Image not found', 404, origin, allowedOrigin);
+		}
+
+		const headers = getCorsHeaders(origin, allowedOrigin);
+		headers.set(
+			'Content-Type',
+			original.headers.get('Content-Type') || 'image/png'
+		);
+		headers.set('Cache-Control', `public, max-age=${IMG_CACHE_TTL}`);
+		return new Response(original.body, { status: 200, headers });
+	} catch {
+		return errorResponse('Failed to fetch image', 502, origin, allowedOrigin);
+	}
+}
+
+/**
+ * GET /nhl/player-headshot
+ * ?playerId=&team=&season=   → specific headshot (64 × 64)
+ * ?default=true               → default silhouette mug
+ */
+async function handlePlayerHeadshot(
+	url: URL,
+	origin: string | null,
+	allowedOrigin: string
+): Promise<Response> {
+	if (url.searchParams.get('default') === 'true') {
+		return proxyAndResize(
+			'https://assets.nhle.com/mugs/nhl/default-skater.png',
+			HEADSHOT_PX,
+			HEADSHOT_PX,
+			'cover',
+			origin,
+			allowedOrigin
+		);
+	}
+
+	const playerId = url.searchParams.get('playerId');
+	const team = url.searchParams.get('team');
+	const season = url.searchParams.get('season');
+
+	if (!playerId || !team || !season) {
+		return errorResponse(
+			'Missing required parameters: playerId, team, season',
+			400,
+			origin,
+			allowedOrigin
+		);
+	}
+
+	const imageUrl = `https://assets.nhle.com/mugs/nhl/${encodeURIComponent(season)}/${encodeURIComponent(team)}/${encodeURIComponent(playerId)}.png`;
+	return proxyAndResize(imageUrl, HEADSHOT_PX, HEADSHOT_PX, 'cover', origin, allowedOrigin);
+}
+
+/**
+ * GET /nhl/team-logo?team=EDM   → 32 × 32 rasterised team logo
+ */
+async function handleTeamLogo(
+	url: URL,
+	origin: string | null,
+	allowedOrigin: string
+): Promise<Response> {
+	const team = url.searchParams.get('team');
+	if (!team) {
+		return errorResponse(
+			'Missing required parameter: team',
+			400,
+			origin,
+			allowedOrigin
+		);
+	}
+
+	const imageUrl = `https://assets.nhle.com/logos/nhl/svg/${encodeURIComponent(team)}_light.svg`;
+	return proxyAndResize(imageUrl, LOGO_PX, LOGO_PX, 'contain', origin, allowedOrigin);
+}
+
 /**
  * Main NHL API router
  */
@@ -843,6 +983,14 @@ export async function handleNhlApi(request: Request, env: Env): Promise<Response
 			headers
 		});
 	};
+
+	// ── Image proxy routes (not rate-limited — cached at the edge) ──────────
+	if (url.pathname === '/nhl/player-headshot') {
+		return handlePlayerHeadshot(url, origin, allowedOrigin);
+	}
+	if (url.pathname === '/nhl/team-logo') {
+		return handleTeamLogo(url, origin, allowedOrigin);
+	}
 
 	// Route handlers
 	try {
