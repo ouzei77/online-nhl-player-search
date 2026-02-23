@@ -66,9 +66,22 @@
 .panelLeft {
 	left: -12%;
 	transform: skewX(25deg);
-	background-color: var(--team-primary, #333);
 	border-right: 6px solid rgba(255, 255, 255, 0.9);
 	box-shadow: 4px 0 10px rgba(0, 0, 0, 0.5);
+
+	/* Team colour + woven jersey mesh in one declaration.
+	   background-color shows through the transparent gaps in background-image.
+	   The mesh uses only transparent white (highlights) & black (shadows)
+	   so it reads identically on any --team-primary value. */
+	background-color: var(--team-primary, #333);
+	background-image:
+		/* Horizontal warp threads — light highlight offset pair */
+		linear-gradient(90deg, rgba(255,255,255,0.07) 50%, transparent 50%),
+		linear-gradient(90deg, rgba(255,255,255,0.13) 50%, transparent 50%),
+		/* Vertical weft threads — dark shadow */
+		linear-gradient(transparent 50%, rgba(0,0,0,0.20) 50%);
+	background-size: 8px 4px, 8px 4px, 4px 8px;
+	background-position: 0 0, 4px 2px, 0 0;
 }
 
 .panelRight {
@@ -135,57 +148,13 @@
 	height: 100%;
 	transform: skewX(18deg);
 	margin-left: 10%;
-
-	/* Multi-layer texture visible on any team colour */
-	background:
-		/* Dark diagonal hatch — shows on light backgrounds */
-		repeating-linear-gradient(
-			135deg,
-			rgba(0, 0, 0, 0.12) 0px,
-			rgba(0, 0, 0, 0.12) 1px,
-			transparent 1px,
-			transparent 8px
-		),
-		/* Light diagonal hatch — shows on dark backgrounds */
-		repeating-linear-gradient(
-			135deg,
-			rgba(255, 255, 255, 0.14) 0px,
-			rgba(255, 255, 255, 0.14) 1px,
-			transparent 1px,
-			transparent 8px
-		),
-		/* Cross-hatch at opposing angle (dark) */
-		repeating-linear-gradient(
-			-45deg,
-			rgba(0, 0, 0, 0.06) 0px,
-			rgba(0, 0, 0, 0.06) 1px,
-			transparent 1px,
-			transparent 14px
-		),
-		/* Cross-hatch at opposing angle (light) */
-		repeating-linear-gradient(
-			-45deg,
-			rgba(255, 255, 255, 0.07) 0px,
-			rgba(255, 255, 255, 0.07) 1px,
-			transparent 1px,
-			transparent 14px
-		),
-		/* Subtle dot-grid overlay */
-		repeating-linear-gradient(
-			0deg,
-			transparent 0px,
-			transparent 19px,
-			rgba(0, 0, 0, 0.04) 19px,
-			rgba(0, 0, 0, 0.04) 20px
-		),
-		repeating-linear-gradient(
-			90deg,
-			transparent 0px,
-			transparent 19px,
-			rgba(0, 0, 0, 0.04) 19px,
-			rgba(0, 0, 0, 0.04) 20px
-		);
-	opacity: 0.55;
+	/* Subtle sheen / depth highlight across the jersey panel */
+	background: linear-gradient(
+		180deg,
+		rgba(255, 255, 255, 0.08) 0%,
+		transparent 40%,
+		rgba(0, 0, 0, 0.06) 100%
+	);
 }
 
 .iceTexture {
