@@ -1,46 +1,38 @@
-# Welcome to React Router + Cloudflare Workers!
+# Online NHL Player Search
 
-[![Deploy to Cloudflare](https://deploy.workers.cloudflare.com/button)](https://deploy.workers.cloudflare.com/?url=https://github.com/cloudflare/templates/tree/main/react-router-starter-template)
-
-![React Router Starter Template Preview](https://imagedelivery.net/wSMYJvS3Xw-n339CbDyDIA/bfdc2f85-e5c9-4c92-128b-3a6711249800/public)
-
-<!-- dash-content-start -->
-
-A modern, production-ready template for building full-stack React applications using [React Router](https://reactrouter.com/) and the [Cloudflare Vite plugin](https://developers.cloudflare.com/workers/vite-plugin/).
+A full-stack web application for searching and viewing NHL player profiles and statistics, built with [React Router 7](https://reactrouter.com/) and deployed on [Cloudflare Workers](https://workers.cloudflare.com/).
 
 ## Features
 
-- 🚀 Server-side rendering
-- ⚡️ Hot Module Replacement (HMR)
-- 📦 Asset bundling and optimization
-- 🔄 Data loading and mutations
-- 🔒 TypeScript by default
+- 🏒 Search for any active or historical NHL player by name
+- 📊 View detailed player stats — current season, career totals, and last 5 games
+- 🏆 See player awards and achievements
+- 🚀 Server-side rendering via Cloudflare Workers
+- ⚡️ Hot Module Replacement (HMR) during local development
+- 🔒 TypeScript throughout
 - 🎉 TailwindCSS for styling
-- 📖 [React Router docs](https://reactrouter.com/)
-- 🔎 Built-in Observability to monitor your Worker
-<!-- dash-content-end -->
+- 🔎 Built-in Cloudflare observability
 
 ## Getting Started
 
-Outside of this repo, you can start a new project with this template using [C3](https://developers.cloudflare.com/pages/get-started/c3/) (the `create-cloudflare` CLI):
+### Prerequisites
 
-```bash
-npm create cloudflare@latest -- --template=cloudflare/templates/react-router-starter-template
-```
-
-A live public deployment of this template is available at [https://react-router-starter-template.templates.workers.dev](https://react-router-starter-template.templates.workers.dev)
+- [Node.js](https://nodejs.org/) 18 or later
+- npm (comes with Node.js)
 
 ### Installation
 
-Install the dependencies:
+Clone the repository and install dependencies:
 
 ```bash
+git clone https://github.com/ouzei77/online-nhl-player-search.git
+cd online-nhl-player-search
 npm install
 ```
 
 ### Development
 
-Start the development server with HMR:
+Start the local development server with HMR:
 
 ```bash
 npm run dev
@@ -48,62 +40,72 @@ npm run dev
 
 Your application will be available at `http://localhost:5173`.
 
-## Typegen
+The Cloudflare Workers environment is emulated locally by Miniflare (built into Wrangler), so no Cloudflare account is required to run the app locally.
 
-Generate types for your Cloudflare bindings in `wrangler.json`:
+## Available Scripts
 
-```sh
-npm run typegen
+| Script | Description |
+|--------|-------------|
+| `npm run dev` | Start the development server with HMR |
+| `npm run build` | Create a production build |
+| `npm run preview` | Preview the production build locally |
+| `npm run deploy` | Deploy to Cloudflare Workers |
+| `npm run cf-typegen` | Regenerate TypeScript types from `wrangler.json` bindings |
+| `npm run check` | Type-check, build, and dry-run deploy |
+
+## Project Structure
+
+```
+online-nhl-player-search/
+├── app/                    # React Router application
+│   ├── routes/             # File-based routes
+│   │   ├── home.tsx        # Home / search page
+│   │   └── player.tsx      # Player profile page
+│   ├── components/         # Shared UI components
+│   ├── types/              # Shared TypeScript types
+│   └── root.tsx            # App shell (HTML document)
+├── workers/                # Cloudflare Worker entry points
+│   ├── app.ts              # Main Worker — routes requests to React Router or API
+│   └── nhl-api.ts          # NHL API proxy handler
+├── docs/                   # Project documentation
+│   ├── architecture.md     # App architecture overview
+│   └── nhl-api-landing-endpoint.md  # NHL API reference
+├── public/                 # Static assets
+├── wrangler.json           # Cloudflare Workers configuration
+└── vite.config.ts          # Vite + Cloudflare plugin configuration
 ```
 
-## Building for Production
+For a deeper explanation of how the pieces fit together, see [docs/architecture.md](docs/architecture.md).
 
-Create a production build:
+## How It Works
 
-```bash
-npm run build
-```
+1. A user types a player name into the search box on the home page.
+2. The browser calls the `/nhl/` API proxy that runs inside the Cloudflare Worker.
+3. The Worker fetches data from the public NHL API (`https://api-web.nhle.com/`) and returns it as JSON.
+4. The React Router frontend renders the player profile page with stats, awards, and recent games.
 
-## Previewing the Production Build
-
-Preview the production build locally:
-
-```bash
-npm run preview
-```
+See [docs/nhl-api-landing-endpoint.md](docs/nhl-api-landing-endpoint.md) for full details on the NHL API response format.
 
 ## Deployment
 
-If you don't have a Cloudflare account, [create one here](https://dash.cloudflare.com/sign-up)! Go to your [Workers dashboard](https://dash.cloudflare.com/?to=%2F%3Aaccount%2Fworkers-and-pages) to see your [free custom Cloudflare Workers subdomain](https://developers.cloudflare.com/workers/configuration/routing/workers-dev/) on `*.workers.dev`.
+If you don't have a Cloudflare account, [create one for free](https://dash.cloudflare.com/sign-up). Then run:
 
-Once that's done, you can build your app:
-
-```sh
+```bash
 npm run build
-```
-
-And deploy it:
-
-```sh
 npm run deploy
 ```
 
-To deploy a preview URL:
+To upload a preview version without promoting it to production:
 
-```sh
+```bash
 npx wrangler versions upload
-```
-
-You can then promote a version to production after verification or roll it out progressively.
-
-```sh
 npx wrangler versions deploy
 ```
 
 ## Styling
 
-This template comes with [Tailwind CSS](https://tailwindcss.com/) already configured for a simple default starting experience. You can use whatever CSS framework you prefer.
+The project uses [Tailwind CSS v4](https://tailwindcss.com/) via the `@tailwindcss/vite` plugin.
 
 ---
 
-Built with ❤️ using React Router.
+Built with ❤️ using React Router and Cloudflare Workers.
