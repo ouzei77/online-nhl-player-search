@@ -1,6 +1,6 @@
 # Online NHL Player Search
 
-A full-stack web application for searching and viewing NHL player profiles and statistics, built with [React Router 7](https://reactrouter.com/) and deployed on [Cloudflare Workers](https://workers.cloudflare.com/).
+A full-stack web application for searching and viewing NHL player profiles and statistics, built with [React Router 7](https://reactrouter.com/) and deployed on [Cloudflare Workers](https://workers.cloudflare.com/). Original version was handbuilt, and this iterations is heavily AI-assisted by Cursor.
 
 ## Features
 
